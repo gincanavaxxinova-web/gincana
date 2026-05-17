@@ -279,8 +279,22 @@ function showScreen(id){
 async function callScript(action, payload){
   if(!APPS_SCRIPT_URL){ return mockCall(action, payload); }
   const url = APPS_SCRIPT_URL + '?action=' + action + '&payload=' + encodeURIComponent(JSON.stringify(payload));
-  const r = await fetch(url);
-  return await r.json();
+  return new Promise((resolve, reject) => {
+    const cbName = 'cb_' + Date.now() + '_' + Math.random().toString(36).substr(2,5);
+    const script = document.createElement('script');
+    window[cbName] = (data) => {
+      delete window[cbName];
+      if(document.body.contains(script)) document.body.removeChild(script);
+      resolve(data);
+    };
+    script.onerror = () => {
+      delete window[cbName];
+      if(document.body.contains(script)) document.body.removeChild(script);
+      reject(new Error('Erro de rede'));
+    };
+    script.src = url + '&callback=' + cbName;
+    document.body.appendChild(script);
+  });
 }
 
 // Mock local para testes antes do Apps Script
