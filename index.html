@@ -33,21 +33,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .btn-gold:hover{opacity:0.88;}
 .btn-outline{background:transparent;color:var(--gold);border:1.5px solid var(--gold);font-weight:700;}
 .btn-outline:hover{background:var(--gold-light);}
-.score-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-.score-name{font-size:14px;font-weight:700;color:var(--text);}
-.score-badge{background:var(--gold-light);color:var(--gold);border:1px solid var(--gold-border);border-radius:20px;padding:4px 12px;font-size:13px;font-weight:800;}
-.progress-wrap{background:var(--border);border-radius:20px;height:6px;margin-bottom:5px;overflow:hidden;}
-.progress-fill{height:100%;border-radius:20px;background:var(--gold);transition:width 0.4s ease;}
-.progress-label{font-size:12px;color:var(--text-muted);}
-.qr-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem;}
-.qr-card{background:var(--bg-white);border:1px solid var(--border);border-radius:10px;padding:1rem;text-align:center;cursor:pointer;transition:all 0.15s;}
-.qr-card:hover{border-color:var(--gold);background:var(--gold-light);}
-.qr-card.answered{opacity:0.38;cursor:not-allowed;background:var(--bg-card);}
-.qr-card.unavailable{opacity:0.5;cursor:not-allowed;}
-.qr-icon{font-size:24px;margin-bottom:6px;}
-.qr-label{font-size:12px;font-weight:800;color:var(--text);text-transform:uppercase;letter-spacing:0.5px;}
-.qr-sub{font-size:11px;color:var(--text-muted);margin-top:2px;}
-.qr-status{font-size:11px;font-weight:700;color:var(--gold);margin-top:5px;}
 .question-text{font-size:15px;font-weight:700;color:var(--text);line-height:1.5;margin-bottom:1.25rem;}
 .option{display:block;width:100%;text-align:left;padding:12px 14px;margin-bottom:8px;border:1px solid var(--border);border-radius:7px;background:var(--bg-white);cursor:pointer;font-size:13px;color:var(--text);font-family:inherit;transition:all 0.15s;line-height:1.4;}
 .option:hover{border-color:var(--gold);background:var(--gold-light);}
@@ -79,7 +64,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .loading-text{font-size:14px;font-weight:600;color:var(--gold);}
 @keyframes spin{to{transform:rotate(360deg);}}
 .alert-box{background:#FFF8E1;border:1px solid var(--gold-border);border-radius:8px;padding:12px 14px;margin-bottom:12px;font-size:13px;color:var(--gold);font-weight:600;text-align:center;display:none;}
-.encerrada-box{background:#FFEBEE;border:1px solid #FFCDD2;border-radius:8px;padding:16px;text-align:center;margin-bottom:1rem;}
+.info-box{background:var(--gold-light);border:1px solid var(--gold-border);border-radius:8px;padding:14px;text-align:center;margin-bottom:1rem;}
+.info-box .info-icon{font-size:28px;margin-bottom:6px;}
+.info-box .info-title{font-size:15px;font-weight:800;color:var(--text);}
+.info-box .info-sub{font-size:12px;color:var(--text-muted);margin-top:4px;}
+.score-mini{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);margin-bottom:10px;}
+.score-mini-name{font-size:13px;font-weight:700;color:var(--text);}
+.score-badge{background:var(--gold-light);color:var(--gold);border:1px solid var(--gold-border);border-radius:20px;padding:3px 10px;font-size:12px;font-weight:800;}
 </style>
 </head>
 <body>
@@ -108,19 +99,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <polygon points="140,370 180,392 180,438 140,460 100,438 100,392"/>
 <polygon points="220,370 260,392 260,438 220,460 180,438 180,392"/>
 <polygon points="300,370 340,392 340,438 300,460 260,438 260,392"/>
-<polygon points="20,460 60,482 60,528 20,550 -20,528 -20,482"/>
-<polygon points="100,460 140,482 140,528 100,550 60,528 60,482"/>
-<polygon points="180,460 220,482 220,528 180,550 140,528 140,482"/>
-<polygon points="260,460 300,482 300,528 260,550 220,528 220,482"/>
-<polygon points="340,460 380,482 380,528 340,550 300,528 300,482"/>
-<polygon points="60,550 100,572 100,618 60,640 20,618 20,572"/>
-<polygon points="140,550 180,572 180,618 140,640 100,618 100,572"/>
-<polygon points="220,550 260,572 260,618 220,640 180,618 180,572"/>
-<polygon points="300,550 340,572 340,618 300,640 260,618 260,572"/>
 </g>
 </svg>
 
-<div id="loading-overlay" class="loading-overlay">
+<div id="loading-overlay" class="loading-overlay" style="display:none;">
   <div class="loading-spinner"></div>
   <div class="loading-text">Carregando...</div>
 </div>
@@ -136,40 +118,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
   <div id="login-alert" class="alert-box"></div>
   <div class="card card-gold-left">
-    <p class="section-label">Cadastro do participante</p>
+    <p class="section-label">Identificação</p>
     <input class="input-field" id="inp-nome" placeholder="Seu nome completo" type="text"/>
     <input class="input-field" id="inp-matricula" placeholder="Matrícula" type="text"/>
     <select class="input-field" id="inp-setor"><option value="">Selecione seu setor...</option></select>
     <div style="height:6px;"></div>
-    <button class="btn btn-gold" onclick="doLogin()">Entrar na Gincana →</button>
+    <button class="btn btn-gold" onclick="doLogin()">Entrar →</button>
   </div>
   <p style="text-align:center;font-size:12px;color:var(--text-muted);margin-top:6px;">Já participou? Informe sua matrícula para continuar de onde parou.</p>
-</div>
-</div>
-
-<!-- TELA MAPA -->
-<div id="screen-map" class="screen">
-<div class="content">
-  <div class="page-title">
-    <div class="eyebrow">Caça ao Tesouro</div>
-    <h1>Encontre os<br><span class="gq">Q</span>R Codes!</h1>
-    <div class="gold-line"></div>
-  </div>
-  <div class="card">
-    <p class="section-label">Seu placar</p>
-    <div class="score-row">
-      <span class="score-name" id="map-name"></span>
-      <span class="score-badge">⭐ <span id="map-pts">0</span> pts</span>
-    </div>
-    <div class="progress-wrap"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
-    <p class="progress-label"><span id="progress-text">0 de 31</span> QR Codes respondidos</p>
-  </div>
-  <p class="section-label">QR Codes disponíveis</p>
-  <div class="qr-grid" id="qr-grid"></div>
-  <div style="height:10px;"></div>
-  <button class="btn btn-outline" onclick="showRanking()">🏅 Ver ranking geral</button>
-  <div style="height:10px;"></div>
-  <button class="btn btn-outline" onclick="doLogout()">← Sair</button>
 </div>
 </div>
 
@@ -177,9 +133,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div id="screen-question" class="screen">
 <div class="content">
   <div class="page-title">
-    <div class="eyebrow" id="q-station-label">Estação</div>
+    <div class="eyebrow" id="q-station-label">QR Code</div>
     <h1><span class="gq">+100</span><br>pontos em jogo</h1>
     <div class="gold-line"></div>
+  </div>
+  <div class="card" id="q-score-card" style="display:none;">
+    <div class="score-mini">
+      <span class="score-mini-name" id="q-user-name"></span>
+      <span class="score-badge">⭐ <span id="q-user-pts">0</span> pts</span>
+    </div>
   </div>
   <div class="card card-gold-left">
     <p class="section-label">Pergunta de <span style="color:var(--gold)">Q</span>ualidade</p>
@@ -188,6 +150,49 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div id="q-result" style="display:none;"></div>
   </div>
   <button class="btn btn-gold" id="btn-after-q" style="display:none;" onclick="afterQuestion()">Ver ranking 🏅</button>
+</div>
+</div>
+
+<!-- TELA JÁ RESPONDIDO -->
+<div id="screen-done" class="screen">
+<div class="content">
+  <div class="page-title">
+    <div class="eyebrow">QR Code</div>
+    <h1>Já<br><span class="gq">Respondido!</span></h1>
+    <div class="gold-line"></div>
+  </div>
+  <div class="card">
+    <div class="score-mini">
+      <span class="score-mini-name" id="done-name"></span>
+      <span class="score-badge">⭐ <span id="done-pts">0</span> pts</span>
+    </div>
+    <div class="info-box">
+      <div class="info-icon">✅</div>
+      <div class="info-title">Você já respondeu este QR Code!</div>
+      <div class="info-sub">Procure outro QR Code espalhado pela empresa para pontuar mais.</div>
+    </div>
+  </div>
+  <button class="btn btn-gold" onclick="showRanking()">Ver ranking 🏅</button>
+</div>
+</div>
+
+<!-- TELA SEM QR CODE -->
+<div id="screen-noqr" class="screen">
+<div class="content">
+  <div class="page-title">
+    <div class="eyebrow">Atenção</div>
+    <h1>Escaneie um<br><span class="gq">QR Code!</span></h1>
+    <div class="gold-line"></div>
+  </div>
+  <div class="card">
+    <div class="info-box">
+      <div class="info-icon">📷</div>
+      <div class="info-title">Nenhum QR Code detectado</div>
+      <div class="info-sub">Para participar, aponte a câmera do celular para um dos QR Codes espalhados pela empresa.</div>
+    </div>
+    <div style="height:6px;"></div>
+    <button class="btn btn-outline" onclick="showRanking()">Ver ranking 🏅</button>
+  </div>
 </div>
 </div>
 
@@ -201,19 +206,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
   <div class="card" id="ranking-list"></div>
   <div style="height:10px;"></div>
-  <button class="btn btn-outline" onclick="showScreen('screen-map')">← Voltar ao mapa</button>
+  <button class="btn btn-outline" onclick="showScreen('screen-noqr')">← Voltar</button>
 </div>
 </div>
 
 <script>
-// ===================== CONFIGURAÇÃO =====================
-const SHEET_ID = '1o3c5ZWdHkNHhw04Xxbe1Lh7ebaAl_90HfLxgADgzNwU';
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzEPOYG2XwaQeKVL4p4MyDFRQ-eo_thoB1ee0Ht6sBnr4NLMAMQd89HX6Vl2rvLn42C/exec';
 
-// ===================== SETORES =====================
 const SETORES = ["Almoxarifado","Artes","Assuntos Reg. Internacionais","Assuntos Regulatórios","Autógenas","Bacterinas","Biológicos - GQ","BTS","Coccidiose","Comercial","Contabilidade","Cravação","Cultura de Tecidos","Embalagem","Engenharia","Envase I","Envase II","Envase III","Escritório - Controle de Qualidade","Expedição","FMV","Formulação","HSE","Laboratório de Antígenos","Lavagem e Esterilização I","Lavagem e Esterilização II","LEB - Controle de Qualidade","LEA - Controle de Qualidade","LEE - Controle de Qualidade","LEFQE - Controle de Qualidade","LEVS - Controle de Qualidade","Liofilização","Manutenção","Marketing","Meios de Cultura","Metrologia","Operador Logístico","OPEX","Ovos Embrionados","P&D","PAC","PCP","Raiva","SAC","Suprimento","Terceiros - GQ","Terceiros - PCP","TI","Validação - GQ"];
 
-// ===================== PERGUNTAS =====================
 const QUESTIONS = [
   {id:1,text:"SEGUNDO A IN°13, O QUE SIGNIFICA A SIGLA BPF?",options:["BONS PASSOS DE FABRICAÇÃO","BOA PRÁTICA DE FAZER","BOAS PRÁTICAS DE FABRICAÇÃO","NENHUMA DAS ALTERNATIVAS ACIMA"],correct:2},
   {id:2,text:"DENTRO DA ÁREA PRODUTIVA É PROIBIDO:",options:["UTILIZAR O UNIFORME NECESSÁRIO","UTILIZAR OS EPIs NECESSÁRIOS À ÁREA","TER A CONDUTA CORRETA","UTILIZAR ADORNOS"],correct:3},
@@ -248,80 +249,41 @@ const QUESTIONS = [
   {id:31,text:"USAR ALIANÇA, RELÓGIO OU BRINCO DENTRO DA ÁREA PRODUTIVA É:",options:["PERMITIDO, DESDE QUE OS ADORNOS SEJAM PEQUENOS","PERMITIDO, SE ESTIVEREM COBERTOS PELO UNIFORME","PROIBIDO, DEVIDO AO RISCO DE QUEDA E CONTAMINAÇÃO FÍSICA","PROIBIDO APENAS DURANTE A LIMPEZA DOS EQUIPAMENTOS"],correct:2}
 ];
 
-// ===================== ESTADO =====================
+// Estado
 let currentUser = null;
 let currentQ = null;
-let currentQIndex = null;
-let allParticipants = [];
+let qrParam = null;
 
-// ===================== INIT =====================
+// Pega o parâmetro ?q= da URL
+const urlParams = new URLSearchParams(window.location.search);
+qrParam = parseInt(urlParams.get('q'));
+
+// Popula setores
 const sel = document.getElementById('inp-setor');
 SETORES.forEach(s => { const o = document.createElement('option'); o.value=s; o.textContent=s; sel.appendChild(o); });
 
-// Verifica se veio com parâmetro de QR Code na URL
-const urlParams = new URLSearchParams(window.location.search);
-const qrParam = urlParams.get('q');
-
-hideLoading();
-
-// ===================== LOADING =====================
+// Se não veio com QR Code, mostra tela de aviso após login
 function showLoading(){ document.getElementById('loading-overlay').style.display='flex'; }
 function hideLoading(){ document.getElementById('loading-overlay').style.display='none'; }
+function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); window.scrollTo(0,0); }
 
-// ===================== TELAS =====================
-function showScreen(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  window.scrollTo(0,0);
-}
-
-// ===================== APPS SCRIPT — COMUNICAÇÃO =====================
 async function callScript(action, payload){
-  if(!APPS_SCRIPT_URL){ return mockCall(action, payload); }
+  if(!APPS_SCRIPT_URL){ return {ok:false}; }
   const url = APPS_SCRIPT_URL + '?action=' + action + '&payload=' + encodeURIComponent(JSON.stringify(payload));
   return new Promise((resolve, reject) => {
     const cbName = 'cb_' + Date.now() + '_' + Math.random().toString(36).substr(2,5);
     const script = document.createElement('script');
-    window[cbName] = (data) => {
-      delete window[cbName];
-      if(document.body.contains(script)) document.body.removeChild(script);
-      resolve(data);
-    };
-    script.onerror = () => {
-      delete window[cbName];
-      if(document.body.contains(script)) document.body.removeChild(script);
-      reject(new Error('Erro de rede'));
-    };
+    window[cbName] = (data) => { delete window[cbName]; if(document.body.contains(script)) document.body.removeChild(script); resolve(data); };
+    script.onerror = () => { delete window[cbName]; if(document.body.contains(script)) document.body.removeChild(script); reject(new Error('Erro')); };
     script.src = url + '&callback=' + cbName;
     document.body.appendChild(script);
   });
 }
 
-// Mock local para testes antes do Apps Script
-function mockCall(action, payload){
-  if(action === 'getParticipant'){
-    const p = allParticipants.find(x=>x.matricula===payload.matricula);
-    return p ? {ok:true, data:p} : {ok:false};
-  }
-  if(action === 'saveParticipant'){
-    const idx = allParticipants.findIndex(x=>x.matricula===payload.matricula);
-    if(idx>=0) allParticipants[idx]=payload; else allParticipants.push(payload);
-    return {ok:true};
-  }
-  if(action === 'getRanking'){
-    return {ok:true, data:[...allParticipants].sort((a,b)=>b.pontos-a.pontos).slice(0,20)};
-  }
-  return {ok:false};
-}
-
-// ===================== LOGIN =====================
 async function doLogin(){
   const nome = document.getElementById('inp-nome').value.trim();
   const mat = document.getElementById('inp-matricula').value.trim();
   const setor = document.getElementById('inp-setor').value;
-  const alert = document.getElementById('login-alert');
-  alert.style.display='none';
-
   if(!nome||!mat||!setor){ showAlert('Preencha todos os campos!'); return; }
 
   showLoading();
@@ -333,80 +295,52 @@ async function doLogin(){
       currentUser = {nome, matricula:mat, setor, pontos:0, respondidas:[]};
       await callScript('saveParticipant', currentUser);
     }
-    renderMap();
-    showScreen('screen-map');
-
-    // Se veio via QR Code, abre direto a pergunta
-    if(qrParam){
-      const qIdx = QUESTIONS.findIndex(q=>q.id===parseInt(qrParam));
-      if(qIdx>=0 && !currentUser.respondidas.includes(parseInt(qrParam))){
-        setTimeout(()=>openQuestion(qIdx), 300);
-      }
-    }
+    hideLoading();
+    continueAfterLogin();
   } catch(e){
+    hideLoading();
     showAlert('Erro de conexão. Tente novamente.');
   }
-  hideLoading();
 }
 
-function showAlert(msg){
-  const a = document.getElementById('login-alert');
-  a.textContent=msg; a.style.display='block';
-}
-
-function doLogout(){
-  currentUser=null;
-  document.getElementById('inp-matricula').value='';
-  showScreen('screen-login');
-}
-
-// ===================== MAPA =====================
-function renderMap(){
-  document.getElementById('map-name').textContent = currentUser.nome;
-  document.getElementById('map-pts').textContent = currentUser.pontos;
-  const done = currentUser.respondidas.length;
-  const total = QUESTIONS.length;
-  document.getElementById('progress-fill').style.width = Math.round(done/total*100)+'%';
-  document.getElementById('progress-text').textContent = done+' de '+total;
-
-  const grid = document.getElementById('qr-grid');
-  grid.innerHTML='';
-  QUESTIONS.forEach((q,i)=>{
-    const answered = currentUser.respondidas.includes(q.id);
-    const c = document.createElement('div');
-    c.className='qr-card'+(answered?' answered':'');
-    c.innerHTML=`
-      <div class="qr-icon">${answered?'✅':'📋'}</div>
-      <div class="qr-label">Estação ${q.id}</div>
-      <div class="qr-status">${answered?'✓ Respondido':'Disponível'}</div>
-    `;
-    if(!answered) c.onclick=()=>openQuestion(i);
-    grid.appendChild(c);
-  });
-}
-
-// ===================== PERGUNTA =====================
-function openQuestion(idx){
-  currentQIndex = idx;
-  currentQ = QUESTIONS[idx];
-  if(currentUser.respondidas.includes(currentQ.id)){
-    alert('Você já respondeu esta estação!'); return;
+function continueAfterLogin(){
+  // Sem QR Code na URL
+  if(!qrParam || isNaN(qrParam)){
+    showScreen('screen-noqr');
+    return;
   }
+  // Verifica se a pergunta existe
+  const q = QUESTIONS.find(x => x.id === qrParam);
+  if(!q){
+    showScreen('screen-noqr');
+    return;
+  }
+  // Já respondeu?
+  if(currentUser.respondidas.includes(qrParam)){
+    document.getElementById('done-name').textContent = currentUser.nome;
+    document.getElementById('done-pts').textContent = currentUser.pontos;
+    showScreen('screen-done');
+    return;
+  }
+  // Abre a pergunta
+  openQuestion(q);
+}
 
-  document.getElementById('q-station-label').textContent = 'Estação '+currentQ.id+' de '+QUESTIONS.length;
-  document.getElementById('q-text').textContent = currentQ.text;
+function showAlert(msg){ const a=document.getElementById('login-alert'); a.textContent=msg; a.style.display='block'; }
 
-  // Embaralha as opções
-  const shuffled = currentQ.options.map((o,i)=>({text:o,original:i}))
-    .sort(()=>Math.random()-0.5);
+function openQuestion(q){
+  currentQ = q;
+  document.getElementById('q-station-label').textContent = 'QR Code #' + q.id;
+  document.getElementById('q-user-name').textContent = currentUser.nome;
+  document.getElementById('q-user-pts').textContent = currentUser.pontos;
+  document.getElementById('q-score-card').style.display='block';
+  document.getElementById('q-text').textContent = q.text;
 
-  const opts = document.getElementById('q-options');
-  opts.innerHTML='';
+  const shuffled = q.options.map((o,i)=>({text:o,original:i})).sort(()=>Math.random()-0.5);
+  const opts = document.getElementById('q-options'); opts.innerHTML='';
   shuffled.forEach(op=>{
-    const letters = ['A','B','C','D'];
     const b = document.createElement('button');
-    b.className='option';
-    b.textContent = op.text;
+    b.className='option'; b.textContent=op.text;
     b.onclick=()=>answerQuestion(op.original, b);
     opts.appendChild(b);
   });
@@ -420,19 +354,16 @@ async function answerQuestion(originalIdx, btn){
   document.querySelectorAll('.option').forEach(b=>{b.disabled=true;});
   const correct = currentQ.correct === originalIdx;
   btn.classList.add(correct?'selected-correct':'selected-wrong');
-
   if(correct) currentUser.pontos += 100;
   currentUser.respondidas.push(currentQ.id);
+  document.getElementById('q-user-pts').textContent = currentUser.pontos;
 
-  const res = document.getElementById('q-result');
-  res.style.display='block';
+  const res = document.getElementById('q-result'); res.style.display='block';
   res.innerHTML = correct
     ? `<div class="result-box success"><div class="result-icon">🎯</div><div class="result-title">Resposta correta!</div><div class="result-pts">+100 pontos</div><div class="result-sub">Continue procurando os outros QR Codes!</div></div>`
-    : `<div class="result-box fail"><div class="result-icon">❌</div><div class="result-title">Resposta incorreta</div><div class="result-sub">Não foi dessa vez. Veja como você ficou no ranking!</div></div>`;
+    : `<div class="result-box fail"><div class="result-icon">❌</div><div class="result-title">Resposta incorreta</div><div class="result-sub">Não foi dessa vez. Continue procurando os outros QR Codes!</div></div>`;
 
   document.getElementById('btn-after-q').style.display='block';
-
-  // Salva no banco
   showLoading();
   try { await callScript('saveParticipant', currentUser); } catch(e){}
   hideLoading();
@@ -440,16 +371,13 @@ async function answerQuestion(originalIdx, btn){
 
 function afterQuestion(){ showRanking(); }
 
-// ===================== RANKING =====================
 async function showRanking(){
   showLoading();
   try {
     const res = await callScript('getRanking', {});
     if(res.ok) renderRanking(res.data);
-    else renderRanking([...allParticipants].sort((a,b)=>b.pontos-a.pontos));
-  } catch(e){
-    renderRanking([]);
-  }
+    else renderRanking([]);
+  } catch(e){ renderRanking([]); }
   hideLoading();
   showScreen('screen-ranking');
 }
@@ -457,23 +385,13 @@ async function showRanking(){
 function renderRanking(data){
   const list = document.getElementById('ranking-list');
   list.innerHTML='<p class="section-label">Classificação atual</p>';
-  if(!data||data.length===0){
-    list.innerHTML+='<p style="text-align:center;color:var(--text-muted);padding:20px;">Nenhum participante ainda.</p>';
-    return;
-  }
+  if(!data||data.length===0){ list.innerHTML+='<p style="text-align:center;color:var(--text-muted);padding:20px;">Nenhum participante ainda.</p>'; return; }
   data.forEach((p,i)=>{
     const isMe = currentUser && p.matricula===currentUser.matricula;
     const pc = i===0?'r1':i===1?'r2':i===2?'r3':'rn';
     const el = document.createElement('div');
     el.className='rank-item'+(isMe?' rank-me':'');
-    el.innerHTML=`
-      <div class="rank-pos ${pc}">${i+1}</div>
-      <div class="rank-info">
-        <div class="rank-name">${p.nome}${isMe?'<span class="tag-you">VOCÊ</span>':''}</div>
-        <div class="rank-dept">${p.setor} · ${(p.respondidas||[]).length} QR Code${(p.respondidas||[]).length !== 1 ? 's' : ''} respondido${(p.respondidas||[]).length !== 1 ? 's' : ''}</div>
-      </div>
-      <div class="rank-pts">${p.pontos} pts</div>
-    `;
+    el.innerHTML=`<div class="rank-pos ${pc}">${i+1}</div><div class="rank-info"><div class="rank-name">${p.nome}${isMe?'<span class="tag-you">VOCÊ</span>':''}</div><div class="rank-dept">${p.setor} · ${(p.respondidas||[]).length} QR Code${(p.respondidas||[]).length!==1?'s':''} respondido${(p.respondidas||[]).length!==1?'s':''}</div></div><div class="rank-pts">${p.pontos} pts</div>`;
     list.appendChild(el);
   });
 }
