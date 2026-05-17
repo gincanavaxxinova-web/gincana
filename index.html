@@ -7,9 +7,9 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --gold:#A0782A;--gold-mid:#C49A3C;--gold-light:#F5EDD8;
-  --gold-border:#D4B06A;--bg:#E8E8E8;--bg-card:#F2F2F2;
-  --bg-white:#FAFAFA;--text:#1A1A1A;--text-muted:#6B6B6B;--border:#D0D0D0;
+  --gold:#A0782A;--gold-light:#F5EDD8;--gold-border:#D4B06A;
+  --bg:#E8E8E8;--bg-card:#F2F2F2;--bg-white:#FAFAFA;
+  --text:#1A1A1A;--text-muted:#6B6B6B;--border:#D0D0D0;
 }
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);min-height:100vh;}
 .screen{display:none;padding:1rem 1rem 2rem;min-height:100vh;position:relative;}
@@ -43,7 +43,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .result-box.success{background:#E8F5E9;border:1px solid #A5D6A7;}
 .result-box.fail{background:#FFEBEE;border:1px solid #FFCDD2;}
 .result-icon{font-size:32px;margin-bottom:6px;}
-.result-title{font-size:17px;font-weight:900;color:var(--text);text-transform:uppercase;letter-spacing:0.5px;}
+.result-title{font-size:17px;font-weight:900;color:var(--text);text-transform:uppercase;}
 .result-pts{font-size:24px;font-weight:900;color:var(--gold);margin-top:4px;}
 .result-sub{font-size:13px;color:var(--text-muted);margin-top:4px;}
 .rank-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
@@ -67,7 +67,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .info-box{background:var(--gold-light);border:1px solid var(--gold-border);border-radius:8px;padding:14px;text-align:center;margin-bottom:1rem;}
 .info-box .info-icon{font-size:28px;margin-bottom:6px;}
 .info-box .info-title{font-size:15px;font-weight:800;color:var(--text);}
-.info-box .info-sub{font-size:12px;color:var(--text-muted);margin-top:4px;}
+.info-box .info-sub{font-size:12px;color:var(--text-muted);margin-top:4px;line-height:1.5;}
 .score-mini{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);margin-bottom:10px;}
 .score-mini-name{font-size:13px;font-weight:700;color:var(--text);}
 .score-badge{background:var(--gold-light);color:var(--gold);border:1px solid var(--gold-border);border-radius:20px;padding:3px 10px;font-size:12px;font-weight:800;}
@@ -107,7 +107,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="loading-text">Carregando...</div>
 </div>
 
-<!-- TELA LOGIN - PASSO 1: MATRÍCULA -->
 <div id="screen-login" class="screen active">
 <div class="content">
   <div class="page-title">
@@ -119,14 +118,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div id="login-alert" class="alert-box"></div>
   <div class="card card-gold-left">
     <p class="section-label">Digite sua Matrícula</p>
-    <input class="input-field" id="inp-matricula" placeholder="Digite sua matrícula" type="text"/>
-    <div style="height:6px;"></div>
+    <input class="input-field" id="inp-matricula" placeholder="Matrícula" type="number" inputmode="numeric"/>
     <button class="btn btn-gold" onclick="checkMatricula()">Continuar →</button>
   </div>
 </div>
 </div>
 
-<!-- TELA CADASTRO - PASSO 2: NOME E SETOR (só para novos) -->
 <div id="screen-cadastro" class="screen">
 <div class="content">
   <div class="page-title">
@@ -145,15 +142,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 </div>
 </div>
 
-<!-- TELA PERGUNTA -->
 <div id="screen-question" class="screen">
 <div class="content">
   <div class="page-title">
-    <div class="eyebrow" id="q-station-label">QR Code</div>
+    <div class="eyebrow">Semana da Qualidade 2026</div>
     <h1><span class="gq">+100</span><br>pontos em jogo</h1>
     <div class="gold-line"></div>
   </div>
-  <div class="card" id="q-score-card" style="display:none;">
+  <div class="card" style="display:block;">
     <div class="score-mini">
       <span class="score-mini-name" id="q-user-name"></span>
       <span class="score-badge">⭐ <span id="q-user-pts">0</span> pts</span>
@@ -169,7 +165,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 </div>
 </div>
 
-<!-- TELA JÁ RESPONDIDO -->
 <div id="screen-done" class="screen">
 <div class="content">
   <div class="page-title">
@@ -192,7 +187,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 </div>
 </div>
 
-<!-- TELA SEM QR CODE -->
 <div id="screen-noqr" class="screen">
 <div class="content">
   <div class="page-title">
@@ -212,7 +206,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 </div>
 </div>
 
-<!-- TELA RANKING -->
 <div id="screen-ranking" class="screen">
 <div class="content">
   <div class="page-title">
@@ -231,80 +224,68 @@ const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzEPOYG2XwaQeKV
 
 const SETORES = ["Almoxarifado","Artes","Assuntos Reg. Internacionais","Assuntos Regulatórios","Autógenas","Bacterinas","Biológicos - GQ","BTS","Coccidiose","Comercial","Contabilidade","Cravação","Cultura de Tecidos","Embalagem","Engenharia","Envase I","Envase II","Envase III","Escritório - Controle de Qualidade","Expedição","FMV","Formulação","HSE","Laboratório de Antígenos","Lavagem e Esterilização I","Lavagem e Esterilização II","LEB - Controle de Qualidade","LEA - Controle de Qualidade","LEE - Controle de Qualidade","LEFQE - Controle de Qualidade","LEVS - Controle de Qualidade","Liofilização","Manutenção","Marketing","Meios de Cultura","Metrologia","Operador Logístico","OPEX","Ovos Embrionados","P&D","PAC","PCP","Raiva","SAC","Suprimento","Terceiros - GQ","Terceiros - PCP","TI","Validação - GQ"];
 
+// Mapeamento código aleatório → índice da pergunta
+const QR_MAP = {
+  'tpkAbZtV': 0, 'il9nw4y6': 1, '4StyY0yU': 2, 'M7Vpecyb': 3,
+  'BhmSPhuz': 4, 'MKVxVh82': 5, 'AOv2YL5k': 6, 'UUBEx6pR': 7,
+  'qgAvD0QL': 8, 'W2np0lMV': 9, 'mk2hcIYb': 10, 'dK5r75pn': 11,
+  'QIlEokhA': 12, 'OQsj1649': 13, 'IB2Emjst': 14, 'UgX74pQ8': 15,
+  'lJT6so7T': 16, 'NQLSsdTp': 17, 'bODrz5wM': 18, 'nDldzs3t': 19,
+  '4hHXeA1T': 20, 'MFZeaykR': 21, 'mnTvlmSr': 22, 'j5siduSy': 23,
+  'v28AvACS': 24, '4YK1ec6H': 25, 'tJULKuNh': 26, 'SGEDqc7R': 27,
+  'X59K7g76': 28, 'smyRy0CL': 29, 'oQgoFTsm': 30
+};
+
 const QUESTIONS = [
-  {id:1,text:"SEGUNDO A IN°13, O QUE SIGNIFICA A SIGLA BPF?",options:["BONS PASSOS DE FABRICAÇÃO","BOA PRÁTICA DE FAZER","BOAS PRÁTICAS DE FABRICAÇÃO","NENHUMA DAS ALTERNATIVAS ACIMA"],correct:2},
-  {id:2,text:"DENTRO DA ÁREA PRODUTIVA É PROIBIDO:",options:["UTILIZAR O UNIFORME NECESSÁRIO","UTILIZAR OS EPIs NECESSÁRIOS À ÁREA","TER A CONDUTA CORRETA","UTILIZAR ADORNOS"],correct:3},
-  {id:3,text:"É PERMITIDO COMER DENTRO DAS ÁREAS PRODUTIVAS, PRINCIPALMENTE DEBAIXO DO FLUXO.",options:["ESTA AFIRMATIVA ESTÁ CORRETA, POIS DEBAIXO DO FLUXO O PRODUTO ESTÁ PROTEGIDO","ESTA AFIRMATIVA ESTÁ CORRETA, POIS O PRODUTO PASSARÁ POR FILTRAÇÃO RETIRANDO TODA SUA CONTAMINAÇÃO","ESTÁ INCORRETA POIS NÃO PODE COMER APENAS DEBAIXO DO FLUXO, MAS EM QUALQUER OUTRO LUGAR É PERMITIDO","ESTÁ INCORRETA — SÓ É PERMITIDO COMER NO REFEITÓRIO"],correct:3},
-  {id:4,text:"AO VERMOS UMA VISITA DENTRO DA ÁREA PRODUTIVA UTILIZANDO MAQUIAGEM E COM ADORNOS, O QUE DEVEMOS FAZER?",options:["IR AO VESTIÁRIO E TAMBÉM COLOCAR ADORNOS E MAQUIAGEM PARA FICARMOS MAIS APRESENTÁVEIS","DEVO AVISAR EDUCADAMENTE AO LÍDER PARA QUE ELE ORIENTE A VISITA QUE NÃO SE DEVE ACESSAR A ÁREA PRODUTIVA DESTA FORMA","NÃO DIZER NADA À VISITA NEM AO LÍDER — DEVEMOS ESPERAR A VISITA SAIR E DEPOIS COMENTAR COM OS COLEGAS","QUEM DEVE CUIDAR DISSO É A GARANTIA, POIS O FUNCIONÁRIO NÃO TEM NADA A VER COM ISSO"],correct:1},
-  {id:5,text:"DURANTE O PREENCHIMENTO DO DOCUMENTO COLOQUEI UMA INFORMAÇÃO ERRADA. AO NOTAR DEVO:",options:["FINGIR QUE NÃO PERCEBI, POIS QUANDO O DOCUMENTO CHEGAR NA GARANTIA ELES MANDARÃO DE VOLTA","RABISCAR BEM FORTE VÁRIAS VEZES DE CANETA PARA QUE NINGUÉM CONSIGA VER O QUE ESTAVA ESCRITO ANTES","REALIZO A CORREÇÃO BPF FAZENDO UM TRAÇO SOBRE A INFORMAÇÃO ERRADA, COLOCANDO A INFORMAÇÃO CORRETA, ASSINANDO E DATANDO NO MOMENTO EM QUE PERCEBER O ERRO","DEVO MOLHAR A BORRACHA OU O DEDO COM SALIVA E PASSAR DELICADAMENTE PARA RETIRAR O QUE FOI ESCRITO"],correct:2},
-  {id:6,text:"EM RELAÇÃO À IN N°13, O QUE SIGNIFICA A SIGLA POP?",options:["PROFISSIONAL OPERACIONAL PADRÃO","PEDIDO OPERACIONAL PROFISSIONAL","PROCEDIMENTO OPERACIONAL PEDIDO","PROCEDIMENTO OPERACIONAL PADRÃO"],correct:3},
-  {id:7,text:"EM RELAÇÃO À IN N°13, O QUE SIGNIFICA A SIGLA PF?",options:["PRATO FEITO","PARA FAZER","PROTOCOLO DE FABRICAÇÃO","PORTO FELIZ"],correct:2},
-  {id:8,text:"SEGUNDO A IN N°13, AS BOAS PRÁTICAS DE FABRICAÇÃO DEVEM SER APLICADAS:",options:["SOMENTE NA GARANTIA DA QUALIDADE","SOMENTE NO CONTROLE DE QUALIDADE","SOMENTE NO ALMOXARIFADO, P&D E RAIVA","EM TODOS OS SETORES DA VAXXINOVA"],correct:3},
-  {id:9,text:"COMO SÃO CLASSIFICADOS OS CONTAMINANTES, SEGUNDO A IN N°13?",options:["FÍSICOS, QUÍMICOS E MICROBIOLÓGICOS","ALIMENTÍCIOS, FISIOLÓGICOS E MACROBIOLÓGICOS","FISIOLÓGICOS, MICROBIOLÓGICOS E FÍSICOS","FÍSICOS, QUÍMICOS E MACROBIOLÓGICOS"],correct:0},
-  {id:10,text:"O QUE DEVEMOS FAZER COM EQUIPAMENTOS QUE APRESENTAM DEFEITO?",options:["DEVEM SER DESTRUÍDOS","DEVE SER SOLICITADA À MANUTENÇÃO A DESTRUIÇÃO DO EQUIPAMENTO","DEVE-SE IDENTIFICÁ-LOS E AVISAR AO LÍDER DO SETOR PARA ABRIR ORDEM DE SERVIÇO (OS) JUNTO À MANUTENÇÃO","NÃO DEVE SER FEITO NADA, POIS QUEM TEM QUE REALIZAR O REPARO É A MANUTENÇÃO"],correct:2},
-  {id:11,text:"BPF É O CONJUNTO DE NORMAS QUE PADRONIZAM E DEFINEM PROCEDIMENTOS E MÉTODOS, GARANTINDO A QUALIDADE DOS PRODUTOS FABRICADOS, COM CONTROLE DESDE O RECEBIMENTO DA MATÉRIA-PRIMA ATÉ A EXPEDIÇÃO DO PRODUTO ACABADO. ESTA AFIRMAÇÃO ESTÁ:",options:["INCORRETA, POIS NÃO É APLICÁVEL A PRODUTO ACABADO","INCORRETA, POIS NÃO COMPREENDE A FASE DE EXPEDIÇÃO","INCORRETA, POIS SÓ É APLICÁVEL À PRODUÇÃO","CORRETA, POIS ESSES CONTROLES EXISTEM PARA GARANTIR A QUALIDADE, SEGURANÇA E EFICÁCIA DOS MEDICAMENTOS FABRICADOS"],correct:3},
-  {id:12,text:"NA VAXXINOVA É UTILIZADA A CANETA DE COR:",options:["VERMELHA","AZUL","PRETA","AZUL PARA A PRODUÇÃO E PRETA PARA A GARANTIA DA QUALIDADE"],correct:1},
-  {id:13,text:"QUAL ALTERNATIVA DÁ EXEMPLO DE UMA CONTAMINAÇÃO CRUZADA?",options:["REALIZO UMA LIMPEZA ADEQUADA PARA RETIRAR TODO RESÍDUO DO PRODUTO ANTERIOR","AO TERMINAR UM PROCESSO FAÇO A LIMPEZA E RETIRO TODAS AS IDENTIFICAÇÕES DO PROCESSO ANTERIOR","AO TERMINAR O PROCESSO DO PRODUTO 'A' NÃO REALIZO LIMPEZA E INICIO EM SEGUIDA O PROCESSO DO PRODUTO 'B'","AO REUTILIZAR UTENSÍLIOS ME PREOCUPO EM REALIZAR UMA LIMPEZA ADEQUADA, CONFORME O PROCEDIMENTO"],correct:2},
-  {id:14,text:"PARA QUEM DEVO SOLICITAR O LOG BOOK?",options:["PARA O CONTROLE DE QUALIDADE","PARA O ALMOXARIFADO","PARA A GARANTIA DA QUALIDADE","PARA O CONTROLE EM PROCESSO"],correct:2},
-  {id:15,text:"QUAL É O SETOR RESPONSÁVEL POR REALIZAR A AUTOINSPEÇÃO?",options:["GARANTIA DA QUALIDADE","CONTROLE DE QUALIDADE","SUPERVISÃO INDUSTRIAL","DIRETORIA"],correct:0},
-  {id:16,text:"QUAL É O SETOR RESPONSÁVEL POR REALIZAR A QUALIFICAÇÃO DE FORNECEDORES?",options:["CONTROLE DE QUALIDADE","GARANTIA DA QUALIDADE","SUPERVISÃO INDUSTRIAL","DIRETORIA"],correct:1},
-  {id:17,text:"QUAL O NOME DO ÓRGÃO REGULAMENTADOR NACIONAL DE PRODUTOS DE USO VETERINÁRIO?",options:["MATA - MINISTÉRIO DA AGRICULTURA TRABALHO E ABASTECIMENTO","MAPA - MINISTÉRIO DA AGRICULTURA PARA ABASTECIMENTO","MAPA - MINISTÉRIO DA AGRICULTURA PRODUÇÃO E ABASTECIMENTO","MAPA - MINISTÉRIO DA AGRICULTURA PECUÁRIA E ABASTECIMENTO"],correct:3},
-  {id:18,text:"SEGUNDO A IN°13, QUAL O OBJETIVO DA AUTOINSPEÇÃO?",options:["VERIFICAR OS PROBLEMAS DO SETOR E SAIR FALANDO PRA TODO MUNDO","VERIFICAR OS PROBLEMAS E RESOLVER TODOS PELO SETOR","NENHUMA DAS ALTERNATIVAS ESTÃO CORRETAS","VERIFICAR O CUMPRIMENTO DE BPF"],correct:3},
-  {id:19,text:"SEGUNDO A IN N°13, QUAL SETOR É RESPONSÁVEL PELA APROVAÇÃO OU REPROVAÇÃO DE MATÉRIA-PRIMA, MATERIAL DE EMBALAGEM, PRODUTO INTERMEDIÁRIO E ACABADO?",options:["GARANTIA DA QUALIDADE","CONTROLE DE QUALIDADE","ALMOXARIFADO","MELHORIA DE PRODUTOS"],correct:1},
-  {id:20,text:"SEGUNDO A IN N°13, OS MATERIAIS E MATÉRIAS-PRIMAS DEVEM OBEDECER QUAL ROTAÇÃO DE ESTOQUE?",options:["O PRIMEIRO QUE VENCE É O PRIMEIRO QUE SAI; O PRIMEIRO QUE ENTRA É O PRIMEIRO QUE SAI","O PRIMEIRO QUE ENTRA É O PRIMEIRO QUE VENCE; O PRIMEIRO QUE VENCE É O PRIMEIRO QUE ENTRA","O PRIMEIRO QUE VENCE É O PRIMEIRO QUE SAI; O PRIMEIRO QUE ENTRA É O PRIMEIRO QUE SAI","TODAS AS ALTERNATIVAS ESTÃO INCORRETAS"],correct:2},
-  {id:21,text:"QUAL A FORMA CORRETA DE UTILIZAR A TOUCA?",options:["COBRINDO AS ORELHAS E A NUCA — NÃO DEVE HAVER FIOS DE CABELO PARA FORA DELA","COBRINDO AS ORELHAS — NÃO DEVE HAVER FIOS DE CABELO PARA FORA DELA","COM AS ORELHAS E NUCA PARA FORA — NÃO HÁ PROBLEMAS DE HAVER FIOS DE CABELO PARA FORA DELA","DEVE SER UTILIZADA COMO BOINA"],correct:0},
-  {id:22,text:"SEGUNDO A IN N°13, O UNIFORME DEVE:",options:["SER UTILIZADO CONFORME A ATIVIDADE DESENVOLVIDA, SER TROCADO COM FREQUÊNCIA SEM A NECESSIDADE DE ESTAR LIMPO","SER UTILIZADO CONFORME ACHAR NECESSÁRIO SEM A NECESSIDADE DE SER TROCADO COM FREQUÊNCIA","SER UTILIZADO CONFORME A ATIVIDADE DESENVOLVIDA, ESTAR LIMPO E SER TROCADO COM FREQUÊNCIA","TODAS AS OPÇÕES ESTÃO INCORRETAS"],correct:2},
-  {id:23,text:"QUANTO À CORREÇÃO BPF, É CORRETO AFIRMAR QUE:",options:["É PROIBIDO RASURAR, COLAR QUALQUER FOLHA EM CIMA, PASSAR CORRETIVO (BRANQUINHO) OU TENTAR APAGAR COM BORRACHA OU DEDO UMEDECIDO","É PERMITIDO RASURAR, COLAR QUALQUER FOLHA EM CIMA, PASSAR CORRETIVO (BRANQUINHO) OU TENTAR APAGAR COM BORRACHA OU DEDO UMEDECIDO","É PROIBIDO APENAS COLAR FOLHA EM CIMA, MAS É PERMITIDO PASSAR CORRETIVO (BRANQUINHO) OU APAGAR COM BORRACHA","É PERMITIDO APENAS RASURAR OU PASSAR CORRETIVO (BRANQUINHO) OU APAGAR COM BORRACHA"],correct:0},
-  {id:24,text:"A QUALIDADE É OBTIDA ATRAVÉS DA SOMA DAS ATIVIDADES REALIZADAS, EXCETO:",options:["ORGANIZAÇÃO DOS PROCESSOS E SETORES","FALTA DE TRABALHO EM EQUIPE","HIGIENE PESSOAL E DO AMBIENTE","TREINAMENTO DOS COLABORADORES"],correct:1},
-  {id:25,text:"VIVEIRO EM QUE SE CONSERVAM ANIMAIS EM CONDIÇÕES ADEQUADAS À UTILIZAÇÃO EM EXPERIMENTOS CIENTÍFICOS OU PRODUÇÃO DE VACINAS E SOROS. A AFIRMATIVA DESCREVE QUAL ÁREA?",options:["PRODUÇÃO","GARANTIA DA QUALIDADE","BIOTÉRIO","COORDENAÇÃO INDUSTRIAL"],correct:2},
-  {id:26,text:"QUAL TIPO DE UNIFORME DEVE SER UTILIZADO EM ÁREA LIMPA?",options:["UNIFORME DE COR AZUL","UNIFORME BRANCO","UNIFORME ESTÉRIL","ROUPA COMUM"],correct:2},
-  {id:27,text:"COLABORADORES DE OUTROS SETORES QUE ENTRAM NA ÁREA PRODUTIVA 'SÓ POR UM MOMENTO' E NÃO ASSINAM O CADERNO DE ACESSO ESTÃO:",options:["CORRETOS, POIS O CADERNO É APENAS PARA VISITAS EXTERNAS","CORRETOS, DESDE QUE AVISEM O LÍDER VERBALMENTE","INCORRETOS, POIS TODA ENTRADA, MESMO RÁPIDA, DEVE SER REGISTRADA","INCORRETOS, MAS SÓ SE FICAREM MAIS DE 5 MINUTOS"],correct:2},
-  {id:28,text:"DENTRO DA ÁREA PRODUTIVA, UM OPERADOR É FLAGRADO SEM MÁSCARA. ELE JUSTIFICA: 'ESQUECI'. ESTA CONDUTA:",options:["É ACEITÁVEL, POIS ESQUECER É HUMANO","É ACEITÁVEL SE ELE NÃO ESTIVER MANIPULANDO PRODUTO","É INADMISSÍVEL, POIS A MÁSCARA É BARREIRA DE CONTAMINAÇÃO","É TOLERADA APENAS NO PRIMEIRO TURNO"],correct:2},
-  {id:29,text:"REALIZAR MOVIMENTOS AMPLOS E ACELERADOS DENTRO DA SALA LIMPA (CORRER, ABANAR OS BRAÇOS) PODE:",options:["AUMENTAR A PRODUTIVIDADE DO OPERADOR","MELHORAR A VENTILAÇÃO DO AMBIENTE","SUSPENDER PARTÍCULAS E CONTAMINAR O PRODUTO","SER FEITO LIVREMENTE, POIS O AR É FILTRADO"],correct:2},
-  {id:30,text:"O TERMO 'WORKING SEED' (SEMENTE DE TRABALHO) REFERE-SE A:",options:["UMA SEMENTE AGRÍCOLA PLANTADA NA FAZENDA PARA CULTIVAR VACINAS","UM MICRORGANISMO UTILIZADO PARA INICIAR PROCESSOS DE PRODUÇÃO","UM FUNCIONÁRIO NOVO QUE ESTÁ EM PERÍODO DE TREINAMENTO","UM PROGRAMA DE INCENTIVO À AGRICULTURA FAMILIAR"],correct:1},
-  {id:31,text:"USAR ALIANÇA, RELÓGIO OU BRINCO DENTRO DA ÁREA PRODUTIVA É:",options:["PERMITIDO, DESDE QUE OS ADORNOS SEJAM PEQUENOS","PERMITIDO, SE ESTIVEREM COBERTOS PELO UNIFORME","PROIBIDO, DEVIDO AO RISCO DE QUEDA E CONTAMINAÇÃO FÍSICA","PROIBIDO APENAS DURANTE A LIMPEZA DOS EQUIPAMENTOS"],correct:2}
+  {code:'tpkAbZtV',text:"SEGUNDO A IN°13, O QUE SIGNIFICA A SIGLA BPF?",options:["BONS PASSOS DE FABRICAÇÃO","BOA PRÁTICA DE FAZER","BOAS PRÁTICAS DE FABRICAÇÃO","NENHUMA DAS ALTERNATIVAS ACIMA"],correct:2},
+  {code:'il9nw4y6',text:"DENTRO DA ÁREA PRODUTIVA É PROIBIDO:",options:["UTILIZAR O UNIFORME NECESSÁRIO","UTILIZAR OS EPIs NECESSÁRIOS À ÁREA","TER A CONDUTA CORRETA","UTILIZAR ADORNOS"],correct:3},
+  {code:'4StyY0yU',text:"É PERMITIDO COMER DENTRO DAS ÁREAS PRODUTIVAS, PRINCIPALMENTE DEBAIXO DO FLUXO.",options:["ESTA AFIRMATIVA ESTÁ CORRETA, POIS DEBAIXO DO FLUXO O PRODUTO ESTÁ PROTEGIDO","ESTA AFIRMATIVA ESTÁ CORRETA, POIS O PRODUTO PASSARÁ POR FILTRAÇÃO RETIRANDO TODA SUA CONTAMINAÇÃO","ESTÁ INCORRETA POIS NÃO PODE COMER APENAS DEBAIXO DO FLUXO, MAS EM QUALQUER OUTRO LUGAR É PERMITIDO","ESTÁ INCORRETA — SÓ É PERMITIDO COMER NO REFEITÓRIO"],correct:3},
+  {code:'M7Vpecyb',text:"AO VERMOS UMA VISITA DENTRO DA ÁREA PRODUTIVA UTILIZANDO MAQUIAGEM E COM ADORNOS, O QUE DEVEMOS FAZER?",options:["IR AO VESTIÁRIO E TAMBÉM COLOCAR ADORNOS E MAQUIAGEM PARA FICARMOS MAIS APRESENTÁVEIS","DEVO AVISAR EDUCADAMENTE AO LÍDER PARA QUE ELE ORIENTE A VISITA QUE NÃO SE DEVE ACESSAR A ÁREA PRODUTIVA DESTA FORMA","NÃO DIZER NADA À VISITA NEM AO LÍDER — DEVEMOS ESPERAR A VISITA SAIR E DEPOIS COMENTAR COM OS COLEGAS","QUEM DEVE CUIDAR DISSO É A GARANTIA, POIS O FUNCIONÁRIO NÃO TEM NADA A VER COM ISSO"],correct:1},
+  {code:'BhmSPhuz',text:"DURANTE O PREENCHIMENTO DO DOCUMENTO COLOQUEI UMA INFORMAÇÃO ERRADA. AO NOTAR DEVO:",options:["FINGIR QUE NÃO PERCEBI, POIS QUANDO O DOCUMENTO CHEGAR NA GARANTIA ELES MANDARÃO DE VOLTA","RABISCAR BEM FORTE VÁRIAS VEZES DE CANETA PARA QUE NINGUÉM CONSIGA VER O QUE ESTAVA ESCRITO ANTES","REALIZO A CORREÇÃO BPF FAZENDO UM TRAÇO SOBRE A INFORMAÇÃO ERRADA, COLOCANDO A INFORMAÇÃO CORRETA, ASSINANDO E DATANDO NO MOMENTO EM QUE PERCEBER O ERRO","DEVO MOLHAR A BORRACHA OU O DEDO COM SALIVA E PASSAR DELICADAMENTE PARA RETIRAR O QUE FOI ESCRITO"],correct:2},
+  {code:'MKVxVh82',text:"EM RELAÇÃO À IN N°13, O QUE SIGNIFICA A SIGLA POP?",options:["PROFISSIONAL OPERACIONAL PADRÃO","PEDIDO OPERACIONAL PROFISSIONAL","PROCEDIMENTO OPERACIONAL PEDIDO","PROCEDIMENTO OPERACIONAL PADRÃO"],correct:3},
+  {code:'AOv2YL5k',text:"EM RELAÇÃO À IN N°13, O QUE SIGNIFICA A SIGLA PF?",options:["PRATO FEITO","PARA FAZER","PROTOCOLO DE FABRICAÇÃO","PORTO FELIZ"],correct:2},
+  {code:'UUBEx6pR',text:"SEGUNDO A IN N°13, AS BOAS PRÁTICAS DE FABRICAÇÃO DEVEM SER APLICADAS:",options:["SOMENTE NA GARANTIA DA QUALIDADE","SOMENTE NO CONTROLE DE QUALIDADE","SOMENTE NO ALMOXARIFADO, P&D E RAIVA","EM TODOS OS SETORES DA VAXXINOVA"],correct:3},
+  {code:'qgAvD0QL',text:"COMO SÃO CLASSIFICADOS OS CONTAMINANTES, SEGUNDO A IN N°13?",options:["FÍSICOS, QUÍMICOS E MICROBIOLÓGICOS","ALIMENTÍCIOS, FISIOLÓGICOS E MACROBIOLÓGICOS","FISIOLÓGICOS, MICROBIOLÓGICOS E FÍSICOS","FÍSICOS, QUÍMICOS E MACROBIOLÓGICOS"],correct:0},
+  {code:'W2np0lMV',text:"O QUE DEVEMOS FAZER COM EQUIPAMENTOS QUE APRESENTAM DEFEITO?",options:["DEVEM SER DESTRUÍDOS","DEVE SER SOLICITADA À MANUTENÇÃO A DESTRUIÇÃO DO EQUIPAMENTO","DEVE-SE IDENTIFICÁ-LOS E AVISAR AO LÍDER DO SETOR PARA ABRIR ORDEM DE SERVIÇO (OS) JUNTO À MANUTENÇÃO","NÃO DEVE SER FEITO NADA, POIS QUEM TEM QUE REALIZAR O REPARO É A MANUTENÇÃO"],correct:2},
+  {code:'mk2hcIYb',text:"BPF É O CONJUNTO DE NORMAS QUE PADRONIZAM E DEFINEM PROCEDIMENTOS E MÉTODOS, GARANTINDO A QUALIDADE DOS PRODUTOS FABRICADOS, COM CONTROLE DESDE O RECEBIMENTO DA MATÉRIA-PRIMA ATÉ A EXPEDIÇÃO DO PRODUTO ACABADO. ESTA AFIRMAÇÃO ESTÁ:",options:["INCORRETA, POIS NÃO É APLICÁVEL A PRODUTO ACABADO","INCORRETA, POIS NÃO COMPREENDE A FASE DE EXPEDIÇÃO","INCORRETA, POIS SÓ É APLICÁVEL À PRODUÇÃO","CORRETA, POIS ESSES CONTROLES EXISTEM PARA GARANTIR A QUALIDADE, SEGURANÇA E EFICÁCIA DOS MEDICAMENTOS FABRICADOS"],correct:3},
+  {code:'dK5r75pn',text:"NA VAXXINOVA É UTILIZADA A CANETA DE COR:",options:["VERMELHA","AZUL","PRETA","AZUL PARA A PRODUÇÃO E PRETA PARA A GARANTIA DA QUALIDADE"],correct:1},
+  {code:'QIlEokhA',text:"QUAL ALTERNATIVA DÁ EXEMPLO DE UMA CONTAMINAÇÃO CRUZADA?",options:["REALIZO UMA LIMPEZA ADEQUADA PARA RETIRAR TODO RESÍDUO DO PRODUTO ANTERIOR","AO TERMINAR UM PROCESSO FAÇO A LIMPEZA E RETIRO TODAS AS IDENTIFICAÇÕES DO PROCESSO ANTERIOR","AO TERMINAR O PROCESSO DO PRODUTO A NÃO REALIZO LIMPEZA E INICIO EM SEGUIDA O PROCESSO DO PRODUTO B","AO REUTILIZAR UTENSÍLIOS ME PREOCUPO EM REALIZAR UMA LIMPEZA ADEQUADA, CONFORME O PROCEDIMENTO"],correct:2},
+  {code:'OQsj1649',text:"PARA QUEM DEVO SOLICITAR O LOG BOOK?",options:["PARA O CONTROLE DE QUALIDADE","PARA O ALMOXARIFADO","PARA A GARANTIA DA QUALIDADE","PARA O CONTROLE EM PROCESSO"],correct:2},
+  {code:'IB2Emjst',text:"QUAL É O SETOR RESPONSÁVEL POR REALIZAR A AUTOINSPEÇÃO?",options:["GARANTIA DA QUALIDADE","CONTROLE DE QUALIDADE","SUPERVISÃO INDUSTRIAL","DIRETORIA"],correct:0},
+  {code:'UgX74pQ8',text:"QUAL É O SETOR RESPONSÁVEL POR REALIZAR A QUALIFICAÇÃO DE FORNECEDORES?",options:["CONTROLE DE QUALIDADE","GARANTIA DA QUALIDADE","SUPERVISÃO INDUSTRIAL","DIRETORIA"],correct:1},
+  {code:'lJT6so7T',text:"QUAL O NOME DO ÓRGÃO REGULAMENTADOR NACIONAL DE PRODUTOS DE USO VETERINÁRIO?",options:["MATA - MINISTÉRIO DA AGRICULTURA TRABALHO E ABASTECIMENTO","MAPA - MINISTÉRIO DA AGRICULTURA PARA ABASTECIMENTO","MAPA - MINISTÉRIO DA AGRICULTURA PRODUÇÃO E ABASTECIMENTO","MAPA - MINISTÉRIO DA AGRICULTURA PECUÁRIA E ABASTECIMENTO"],correct:3},
+  {code:'NQLSsdTp',text:"SEGUNDO A IN°13, QUAL O OBJETIVO DA AUTOINSPEÇÃO?",options:["VERIFICAR OS PROBLEMAS DO SETOR E SAIR FALANDO PRA TODO MUNDO","VERIFICAR OS PROBLEMAS E RESOLVER TODOS PELO SETOR","NENHUMA DAS ALTERNATIVAS ESTÃO CORRETAS","VERIFICAR O CUMPRIMENTO DE BPF"],correct:3},
+  {code:'bODrz5wM',text:"SEGUNDO A IN N°13, QUAL SETOR É RESPONSÁVEL PELA APROVAÇÃO OU REPROVAÇÃO DE MATÉRIA-PRIMA, MATERIAL DE EMBALAGEM, PRODUTO INTERMEDIÁRIO E ACABADO?",options:["GARANTIA DA QUALIDADE","CONTROLE DE QUALIDADE","ALMOXARIFADO","MELHORIA DE PRODUTOS"],correct:1},
+  {code:'nDldzs3t',text:"SEGUNDO A IN N°13, OS MATERIAIS E MATÉRIAS-PRIMAS DEVEM OBEDECER QUAL ROTAÇÃO DE ESTOQUE?",options:["O PRIMEIRO QUE VENCE É O PRIMEIRO QUE SAI; O PRIMEIRO QUE ENTRA É O PRIMEIRO QUE SAI","O PRIMEIRO QUE ENTRA É O PRIMEIRO QUE VENCE; O PRIMEIRO QUE VENCE É O PRIMEIRO QUE ENTRA","O PRIMEIRO QUE VENCE É O PRIMEIRO QUE SAI; O PRIMEIRO QUE ENTRA É O PRIMEIRO QUE SAI","TODAS AS ALTERNATIVAS ESTÃO INCORRETAS"],correct:2},
+  {code:'4hHXeA1T',text:"QUAL A FORMA CORRETA DE UTILIZAR A TOUCA?",options:["COBRINDO AS ORELHAS E A NUCA — NÃO DEVE HAVER FIOS DE CABELO PARA FORA DELA","COBRINDO AS ORELHAS — NÃO DEVE HAVER FIOS DE CABELO PARA FORA DELA","COM AS ORELHAS E NUCA PARA FORA — NÃO HÁ PROBLEMAS DE HAVER FIOS DE CABELO PARA FORA DELA","DEVE SER UTILIZADA COMO BOINA"],correct:0},
+  {code:'MFZeaykR',text:"SEGUNDO A IN N°13, O UNIFORME DEVE:",options:["SER UTILIZADO CONFORME A ATIVIDADE DESENVOLVIDA, SER TROCADO COM FREQUÊNCIA SEM A NECESSIDADE DE ESTAR LIMPO","SER UTILIZADO CONFORME ACHAR NECESSÁRIO SEM A NECESSIDADE DE SER TROCADO COM FREQUÊNCIA","SER UTILIZADO CONFORME A ATIVIDADE DESENVOLVIDA, ESTAR LIMPO E SER TROCADO COM FREQUÊNCIA","TODAS AS OPÇÕES ESTÃO INCORRETAS"],correct:2},
+  {code:'mnTvlmSr',text:"QUANTO À CORREÇÃO BPF, É CORRETO AFIRMAR QUE:",options:["É PROIBIDO RASURAR, COLAR QUALQUER FOLHA EM CIMA, PASSAR CORRETIVO (BRANQUINHO) OU TENTAR APAGAR COM BORRACHA OU DEDO UMEDECIDO","É PERMITIDO RASURAR, COLAR QUALQUER FOLHA EM CIMA, PASSAR CORRETIVO (BRANQUINHO) OU TENTAR APAGAR COM BORRACHA OU DEDO UMEDECIDO","É PROIBIDO APENAS COLAR FOLHA EM CIMA, MAS É PERMITIDO PASSAR CORRETIVO (BRANQUINHO) OU APAGAR COM BORRACHA","É PERMITIDO APENAS RASURAR OU PASSAR CORRETIVO (BRANQUINHO) OU APAGAR COM BORRACHA"],correct:0},
+  {code:'j5siduSy',text:"A QUALIDADE É OBTIDA ATRAVÉS DA SOMA DAS ATIVIDADES REALIZADAS, EXCETO:",options:["ORGANIZAÇÃO DOS PROCESSOS E SETORES","FALTA DE TRABALHO EM EQUIPE","HIGIENE PESSOAL E DO AMBIENTE","TREINAMENTO DOS COLABORADORES"],correct:1},
+  {code:'v28AvACS',text:"VIVEIRO EM QUE SE CONSERVAM ANIMAIS EM CONDIÇÕES ADEQUADAS À UTILIZAÇÃO EM EXPERIMENTOS CIENTÍFICOS OU PRODUÇÃO DE VACINAS E SOROS. A AFIRMATIVA DESCREVE QUAL ÁREA?",options:["PRODUÇÃO","GARANTIA DA QUALIDADE","BIOTÉRIO","COORDENAÇÃO INDUSTRIAL"],correct:2},
+  {code:'4YK1ec6H',text:"QUAL TIPO DE UNIFORME DEVE SER UTILIZADO EM ÁREA LIMPA?",options:["UNIFORME DE COR AZUL","UNIFORME BRANCO","UNIFORME ESTÉRIL","ROUPA COMUM"],correct:2},
+  {code:'tJULKuNh',text:"COLABORADORES DE OUTROS SETORES QUE ENTRAM NA ÁREA PRODUTIVA 'SÓ POR UM MOMENTO' E NÃO ASSINAM O CADERNO DE ACESSO ESTÃO:",options:["CORRETOS, POIS O CADERNO É APENAS PARA VISITAS EXTERNAS","CORRETOS, DESDE QUE AVISEM O LÍDER VERBALMENTE","INCORRETOS, POIS TODA ENTRADA, MESMO RÁPIDA, DEVE SER REGISTRADA","INCORRETOS, MAS SÓ SE FICAREM MAIS DE 5 MINUTOS"],correct:2},
+  {code:'SGEDqc7R',text:"DENTRO DA ÁREA PRODUTIVA, UM OPERADOR É FLAGRADO SEM MÁSCARA. ELE JUSTIFICA: ESQUECI. ESTA CONDUTA:",options:["É ACEITÁVEL, POIS ESQUECER É HUMANO","É ACEITÁVEL SE ELE NÃO ESTIVER MANIPULANDO PRODUTO","É INADMISSÍVEL, POIS A MÁSCARA É BARREIRA DE CONTAMINAÇÃO","É TOLERADA APENAS NO PRIMEIRO TURNO"],correct:2},
+  {code:'X59K7g76',text:"REALIZAR MOVIMENTOS AMPLOS E ACELERADOS DENTRO DA SALA LIMPA (CORRER, ABANAR OS BRAÇOS) PODE:",options:["AUMENTAR A PRODUTIVIDADE DO OPERADOR","MELHORAR A VENTILAÇÃO DO AMBIENTE","SUSPENDER PARTÍCULAS E CONTAMINAR O PRODUTO","SER FEITO LIVREMENTE, POIS O AR É FILTRADO"],correct:2},
+  {code:'smyRy0CL',text:"O TERMO WORKING SEED (SEMENTE DE TRABALHO) REFERE-SE A:",options:["UMA SEMENTE AGRÍCOLA PLANTADA NA FAZENDA PARA CULTIVAR VACINAS","UM MICRORGANISMO UTILIZADO PARA INICIAR PROCESSOS DE PRODUÇÃO","UM FUNCIONÁRIO NOVO QUE ESTÁ EM PERÍODO DE TREINAMENTO","UM PROGRAMA DE INCENTIVO À AGRICULTURA FAMILIAR"],correct:1},
+  {code:'oQgoFTsm',text:"USAR ALIANÇA, RELÓGIO OU BRINCO DENTRO DA ÁREA PRODUTIVA É:",options:["PERMITIDO, DESDE QUE OS ADORNOS SEJAM PEQUENOS","PERMITIDO, SE ESTIVEREM COBERTOS PELO UNIFORME","PROIBIDO, DEVIDO AO RISCO DE QUEDA E CONTAMINAÇÃO FÍSICA","PROIBIDO APENAS DURANTE A LIMPEZA DOS EQUIPAMENTOS"],correct:2}
 ];
 
-// Estado
 let currentUser = null;
 let currentQ = null;
-let qrParam = null;
+let qrCode = null;
 
-// Pega o parâmetro ?q= da URL
 const urlParams = new URLSearchParams(window.location.search);
-qrParam = parseInt(urlParams.get('q'));
+qrCode = urlParams.get('q');
 
-// Popula setores
-['inp-setor'].forEach(id => {
-  const sel = document.getElementById(id);
-  if(sel) SETORES.forEach(s => { const o = document.createElement('option'); o.value=s; o.textContent=s; sel.appendChild(o); });
-});
+const sel = document.getElementById('inp-setor');
+SETORES.forEach(s => { const o = document.createElement('option'); o.value=s; o.textContent=s; sel.appendChild(o); });
 
 function showLoading(){ document.getElementById('loading-overlay').style.display='flex'; }
 function hideLoading(){ document.getElementById('loading-overlay').style.display='none'; }
 function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); window.scrollTo(0,0); }
-
-// Tenta login automático pela matrícula salva no celular
-(async function autoLogin(){
-  const savedMat = localStorage.getItem('gincana_matricula');
-  if(!savedMat) return;
-  // Preenche o campo para caso precise mostrar o form
-  document.getElementById('inp-matricula').value = savedMat;
-  showLoading();
-  try {
-    const res = await callScript('getParticipant', {matricula: savedMat});
-    if(res.ok && res.data){
-      currentUser = res.data;
-      hideLoading();
-      continueAfterLogin();
-      return;
-    }
-  } catch(e){}
-  hideLoading();
-})();
+function showAlert(msg){ const a=document.getElementById('login-alert'); a.textContent=msg; a.style.display='block'; }
 
 async function callScript(action, payload){
-  if(!APPS_SCRIPT_URL){ return {ok:false}; }
   const url = APPS_SCRIPT_URL + '?action=' + action + '&payload=' + encodeURIComponent(JSON.stringify(payload));
   return new Promise((resolve, reject) => {
     const cbName = 'cb_' + Date.now() + '_' + Math.random().toString(36).substr(2,5);
@@ -319,121 +300,53 @@ async function callScript(action, payload){
 async function checkMatricula(){
   const mat = document.getElementById('inp-matricula').value.trim();
   if(!mat){ showAlert('Digite sua matrícula!'); return; }
-
+  if(!/^[0-9]+$/.test(mat)){ showAlert('A matrícula deve conter apenas números.'); return; }
   showLoading();
   try {
     const res = await callScript('getParticipant', {matricula: mat});
     hideLoading();
-    if(res.ok && res.data){
-      // Já cadastrado — vai direto
-      currentUser = res.data;
-      continueAfterLogin();
-    } else {
-      // Novo participante — pede nome e setor
-      showScreen('screen-cadastro');
-    }
-  } catch(e){
-    hideLoading();
-    showAlert('Erro de conexão. Tente novamente.');
-  }
+    if(res.ok && res.data){ currentUser = res.data; continueAfterLogin(); }
+    else { showScreen('screen-cadastro'); }
+  } catch(e){ hideLoading(); showAlert('Erro de conexão. Tente novamente.'); }
 }
 
-async function docastro(){
-  const mat = document.getElementById('inp-matricula').value.trim();
-  const nome = document.getElementById('inp-nome').value.trim();
-  const setor = document.getElementById('inp-setor').value;
-  if(!nome || nome.length < 5){ 
-    const a=document.getElementById('cadastro-alert'); 
-    a.textContent= !nome ? 'Preencha todos os campos!' : 'Seu nome está incompleto.'; 
-    a.style.display='block'; 
-    return; 
-  }
-  if(!setor){ 
-    const a=document.getElementById('cadastro-alert'); 
-    a.textContent='Selecione seu setor.'; 
-    a.style.display='block'; 
-    return; 
-  }
-  showLoading();
-  try {
-    currentUser = {nome, matricula:mat, setor, pontos:0, respondidas:[]};
-    await callScript('saveParticipant', currentUser);
-    hideLoading();
-    continueAfterLogin();
-  } catch(e){
-    hideLoading();
-    const a=document.getElementById('cadastro-alert');
-    a.textContent='Erro de conexão. Tente novamente.';
-    a.style.display='block';
-  }
-}
-
-// Alias para corrigir typo
-function docastro(){ return docadastro(); }
 async function docadastro(){
   const mat = document.getElementById('inp-matricula').value.trim();
   const nome = document.getElementById('inp-nome').value.trim();
   const setor = document.getElementById('inp-setor').value;
-  if(!nome || nome.length < 5){ 
-    const a=document.getElementById('cadastro-alert'); 
-    a.textContent= !nome ? 'Preencha todos os campos!' : 'Seu nome está incompleto.'; 
-    a.style.display='block'; 
-    return; 
+  const alerta = document.getElementById('cadastro-alert');
+
+  if(!nome || nome.length < 5){
+    alerta.textContent = !nome ? 'Preencha todos os campos!' : 'Seu nome está incompleto.';
+    alerta.style.display='block'; return;
   }
-  if(!setor){ 
-    const a=document.getElementById('cadastro-alert'); 
-    a.textContent='Selecione seu setor.'; 
-    a.style.display='block'; 
-    return; 
-  }
+  if(!setor){ alerta.textContent='Selecione seu setor.'; alerta.style.display='block'; return; }
+
   showLoading();
   try {
     currentUser = {nome, matricula:mat, setor, pontos:0, respondidas:[]};
     await callScript('saveParticipant', currentUser);
-    hideLoading();
-    continueAfterLogin();
-  } catch(e){
-    hideLoading();
-    const a=document.getElementById('cadastro-alert');
-    a.textContent='Erro de conexão. Tente novamente.';
-    a.style.display='block';
-  }
+    hideLoading(); continueAfterLogin();
+  } catch(e){ hideLoading(); alerta.textContent='Erro de conexão. Tente novamente.'; alerta.style.display='block'; }
 }
 
 function continueAfterLogin(){
-  // Sem QR Code na URL
-  if(!qrParam || isNaN(qrParam)){
-    showScreen('screen-noqr');
-    return;
-  }
-  // Verifica se a pergunta existe
-  const q = QUESTIONS.find(x => x.id === qrParam);
-  if(!q){
-    showScreen('screen-noqr');
-    return;
-  }
-  // Já respondeu?
-  if(currentUser.respondidas.includes(qrParam)){
+  if(!qrCode){ showScreen('screen-noqr'); return; }
+  const q = QUESTIONS.find(x => x.code === qrCode);
+  if(!q){ showScreen('screen-noqr'); return; }
+  if(currentUser.respondidas.includes(qrCode)){
     document.getElementById('done-name').textContent = currentUser.nome;
     document.getElementById('done-pts').textContent = currentUser.pontos;
-    showScreen('screen-done');
-    return;
+    showScreen('screen-done'); return;
   }
-  // Abre a pergunta
   openQuestion(q);
 }
 
-function showAlert(msg){ const a=document.getElementById('login-alert'); a.textContent=msg; a.style.display='block'; }
-function showCadastroAlert(msg){ const a=document.getElementById('cadastro-alert'); a.textContent=msg; a.style.display='block'; }
-
 function openQuestion(q){
   currentQ = q;
-  document.getElementById('q-station-label').textContent = 'QR Code #' + q.id;
   document.getElementById('q-user-name').textContent = currentUser.nome;
   document.getElementById('q-user-pts').textContent = currentUser.pontos;
-  document.getElementById('q-score-card').style.display='block';
   document.getElementById('q-text').textContent = q.text;
-
   const shuffled = q.options.map((o,i)=>({text:o,original:i})).sort(()=>Math.random()-0.5);
   const opts = document.getElementById('q-options'); opts.innerHTML='';
   shuffled.forEach(op=>{
@@ -442,7 +355,6 @@ function openQuestion(q){
     b.onclick=()=>answerQuestion(op.original, b);
     opts.appendChild(b);
   });
-
   document.getElementById('q-result').style.display='none';
   document.getElementById('btn-after-q').style.display='none';
   showScreen('screen-question');
@@ -453,14 +365,12 @@ async function answerQuestion(originalIdx, btn){
   const correct = currentQ.correct === originalIdx;
   btn.classList.add(correct?'selected-correct':'selected-wrong');
   if(correct) currentUser.pontos += 100;
-  currentUser.respondidas.push(currentQ.id);
+  currentUser.respondidas.push(currentQ.code);
   document.getElementById('q-user-pts').textContent = currentUser.pontos;
-
   const res = document.getElementById('q-result'); res.style.display='block';
   res.innerHTML = correct
     ? `<div class="result-box success"><div class="result-icon">🎯</div><div class="result-title">Resposta correta!</div><div class="result-pts">+100 pontos</div><div class="result-sub">Continue procurando os outros QR Codes!</div></div>`
     : `<div class="result-box fail"><div class="result-icon">❌</div><div class="result-title">Resposta incorreta</div><div class="result-sub">Não foi dessa vez. Continue procurando os outros QR Codes!</div></div>`;
-
   document.getElementById('btn-after-q').style.display='block';
   showLoading();
   try { await callScript('saveParticipant', currentUser); } catch(e){}
@@ -473,11 +383,9 @@ async function showRanking(){
   showLoading();
   try {
     const res = await callScript('getRanking', {});
-    if(res.ok) renderRanking(res.data);
-    else renderRanking([]);
+    if(res.ok) renderRanking(res.data); else renderRanking([]);
   } catch(e){ renderRanking([]); }
-  hideLoading();
-  showScreen('screen-ranking');
+  hideLoading(); showScreen('screen-ranking');
 }
 
 function renderRanking(data){
