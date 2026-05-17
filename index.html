@@ -342,9 +342,15 @@ async function docastro(){
   const mat = document.getElementById('inp-matricula').value.trim();
   const nome = document.getElementById('inp-nome').value.trim();
   const setor = document.getElementById('inp-setor').value;
-  if(!nome||!setor){ 
+  if(!nome || nome.length < 5){ 
     const a=document.getElementById('cadastro-alert'); 
-    a.textContent='Preencha todos os campos!'; 
+    a.textContent= !nome ? 'Preencha todos os campos!' : 'Seu nome está incompleto.'; 
+    a.style.display='block'; 
+    return; 
+  }
+  if(!setor){ 
+    const a=document.getElementById('cadastro-alert'); 
+    a.textContent='Selecione seu setor.'; 
     a.style.display='block'; 
     return; 
   }
@@ -368,9 +374,15 @@ async function docadastro(){
   const mat = document.getElementById('inp-matricula').value.trim();
   const nome = document.getElementById('inp-nome').value.trim();
   const setor = document.getElementById('inp-setor').value;
-  if(!nome||!setor){ 
+  if(!nome || nome.length < 5){ 
     const a=document.getElementById('cadastro-alert'); 
-    a.textContent='Preencha todos os campos!'; 
+    a.textContent= !nome ? 'Preencha todos os campos!' : 'Seu nome está incompleto.'; 
+    a.style.display='block'; 
+    return; 
+  }
+  if(!setor){ 
+    const a=document.getElementById('cadastro-alert'); 
+    a.textContent='Selecione seu setor.'; 
     a.style.display='block'; 
     return; 
   }
