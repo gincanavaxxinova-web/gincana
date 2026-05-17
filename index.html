@@ -107,7 +107,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="loading-text">Carregando...</div>
 </div>
 
-<!-- TELA LOGIN -->
+<!-- TELA LOGIN - PASSO 1: MATRÍCULA -->
 <div id="screen-login" class="screen active">
 <div class="content">
   <div class="page-title">
@@ -119,13 +119,29 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div id="login-alert" class="alert-box"></div>
   <div class="card card-gold-left">
     <p class="section-label">Identificação</p>
+    <input class="input-field" id="inp-matricula" placeholder="Digite sua matrícula" type="text"/>
+    <div style="height:6px;"></div>
+    <button class="btn btn-gold" onclick="checkMatricula()">Continuar →</button>
+  </div>
+</div>
+</div>
+
+<!-- TELA CADASTRO - PASSO 2: NOME E SETOR (só para novos) -->
+<div id="screen-cadastro" class="screen">
+<div class="content">
+  <div class="page-title">
+    <div class="eyebrow">Primeiro acesso</div>
+    <h1>Bem-vindo à<br><span class="gq">G</span>incana!</h1>
+    <div class="gold-line"></div>
+  </div>
+  <div id="cadastro-alert" class="alert-box"></div>
+  <div class="card card-gold-left">
+    <p class="section-label">Complete seu cadastro</p>
     <input class="input-field" id="inp-nome" placeholder="Seu nome completo" type="text"/>
-    <input class="input-field" id="inp-matricula" placeholder="Matrícula" type="text"/>
     <select class="input-field" id="inp-setor"><option value="">Selecione seu setor...</option></select>
     <div style="height:6px;"></div>
-    <button class="btn btn-gold" onclick="doLogin()">Entrar →</button>
+    <button class="btn btn-gold" onclick="docadastro()">Entrar na Gincana →</button>
   </div>
-  <p style="text-align:center;font-size:12px;color:var(--text-muted);margin-top:6px;">Já participou? Informe sua matrícula para continuar de onde parou.</p>
 </div>
 </div>
 
@@ -259,13 +275,33 @@ const urlParams = new URLSearchParams(window.location.search);
 qrParam = parseInt(urlParams.get('q'));
 
 // Popula setores
-const sel = document.getElementById('inp-setor');
-SETORES.forEach(s => { const o = document.createElement('option'); o.value=s; o.textContent=s; sel.appendChild(o); });
+['inp-setor'].forEach(id => {
+  const sel = document.getElementById(id);
+  if(sel) SETORES.forEach(s => { const o = document.createElement('option'); o.value=s; o.textContent=s; sel.appendChild(o); });
+});
 
-// Se não veio com QR Code, mostra tela de aviso após login
 function showLoading(){ document.getElementById('loading-overlay').style.display='flex'; }
 function hideLoading(){ document.getElementById('loading-overlay').style.display='none'; }
 function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); window.scrollTo(0,0); }
+
+// Tenta login automático pela matrícula salva no celular
+(async function autoLogin(){
+  const savedMat = localStorage.getItem('gincana_matricula');
+  if(!savedMat) return;
+  // Preenche o campo para caso precise mostrar o form
+  document.getElementById('inp-matricula').value = savedMat;
+  showLoading();
+  try {
+    const res = await callScript('getParticipant', {matricula: savedMat});
+    if(res.ok && res.data){
+      currentUser = res.data;
+      hideLoading();
+      continueAfterLogin();
+      return;
+    }
+  } catch(e){}
+  hideLoading();
+})();
 
 async function callScript(action, payload){
   if(!APPS_SCRIPT_URL){ return {ok:false}; }
@@ -280,26 +316,75 @@ async function callScript(action, payload){
   });
 }
 
-async function doLogin(){
-  const nome = document.getElementById('inp-nome').value.trim();
+async function checkMatricula(){
   const mat = document.getElementById('inp-matricula').value.trim();
-  const setor = document.getElementById('inp-setor').value;
-  if(!nome||!mat||!setor){ showAlert('Preencha todos os campos!'); return; }
+  if(!mat){ showAlert('Digite sua matrícula!'); return; }
 
   showLoading();
   try {
     const res = await callScript('getParticipant', {matricula: mat});
+    hideLoading();
     if(res.ok && res.data){
+      // Já cadastrado — vai direto
       currentUser = res.data;
+      continueAfterLogin();
     } else {
-      currentUser = {nome, matricula:mat, setor, pontos:0, respondidas:[]};
-      await callScript('saveParticipant', currentUser);
+      // Novo participante — pede nome e setor
+      showScreen('screen-cadastro');
     }
+  } catch(e){
+    hideLoading();
+    showAlert('Erro de conexão. Tente novamente.');
+  }
+}
+
+async function docastro(){
+  const mat = document.getElementById('inp-matricula').value.trim();
+  const nome = document.getElementById('inp-nome').value.trim();
+  const setor = document.getElementById('inp-setor').value;
+  if(!nome||!setor){ 
+    const a=document.getElementById('cadastro-alert'); 
+    a.textContent='Preencha todos os campos!'; 
+    a.style.display='block'; 
+    return; 
+  }
+  showLoading();
+  try {
+    currentUser = {nome, matricula:mat, setor, pontos:0, respondidas:[]};
+    await callScript('saveParticipant', currentUser);
     hideLoading();
     continueAfterLogin();
   } catch(e){
     hideLoading();
-    showAlert('Erro de conexão. Tente novamente.');
+    const a=document.getElementById('cadastro-alert');
+    a.textContent='Erro de conexão. Tente novamente.';
+    a.style.display='block';
+  }
+}
+
+// Alias para corrigir typo
+function docastro(){ return docadastro(); }
+async function docadastro(){
+  const mat = document.getElementById('inp-matricula').value.trim();
+  const nome = document.getElementById('inp-nome').value.trim();
+  const setor = document.getElementById('inp-setor').value;
+  if(!nome||!setor){ 
+    const a=document.getElementById('cadastro-alert'); 
+    a.textContent='Preencha todos os campos!'; 
+    a.style.display='block'; 
+    return; 
+  }
+  showLoading();
+  try {
+    currentUser = {nome, matricula:mat, setor, pontos:0, respondidas:[]};
+    await callScript('saveParticipant', currentUser);
+    hideLoading();
+    continueAfterLogin();
+  } catch(e){
+    hideLoading();
+    const a=document.getElementById('cadastro-alert');
+    a.textContent='Erro de conexão. Tente novamente.';
+    a.style.display='block';
   }
 }
 
@@ -327,6 +412,7 @@ function continueAfterLogin(){
 }
 
 function showAlert(msg){ const a=document.getElementById('login-alert'); a.textContent=msg; a.style.display='block'; }
+function showCadastroAlert(msg){ const a=document.getElementById('cadastro-alert'); a.textContent=msg; a.style.display='block'; }
 
 function openQuestion(q){
   currentQ = q;
