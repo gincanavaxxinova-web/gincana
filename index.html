@@ -397,7 +397,7 @@ function renderRanking(data){
     const pc = i===0?'r1':i===1?'r2':i===2?'r3':'rn';
     const el = document.createElement('div');
     el.className='rank-item'+(isMe?' rank-me':'');
-    el.innerHTML=`<div class="rank-pos ${pc}">${i+1}</div><div class="rank-info"><div class="rank-name">${p.nome}${isMe?'<span class="tag-you">VOCÊ</span>':''}</div><div class="rank-dept">${p.setor} · ${(p.respondidas||[]).length} QR Code${(p.respondidas||[]).length!==1?'s':''} respondido${(p.respondidas||[]).length!==1?'s':''}</div></div><div class="rank-pts">${p.pontos} pts</div>`;
+    el.innerHTML=`<div class="rank-pos ${pc}">${i+1}</div><div class="rank-info"><div class="rank-name">${p.nome}${isMe?'<span class="tag-you">VOCÊ</span>':''}</div><div class="rank-dept">${p.setor}</div></div><div class="rank-pts">${p.pontos} pts</div>`;
     list.appendChild(el);
   });
 }
