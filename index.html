@@ -282,7 +282,22 @@ SETORES.forEach(s => { const o = document.createElement('option'); o.value=s; o.
 
 function showLoading(){ document.getElementById('loading-overlay').style.display='flex'; }
 function hideLoading(){ document.getElementById('loading-overlay').style.display='none'; }
-function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); window.scrollTo(0,0); }
+function showScreen(id){
+  // Se voltar para noqr mas tem QR Code na URL já respondido, mostra tela correta
+  if(id === 'screen-noqr' && qrCode && currentUser){
+    const q = QUESTIONS.find(x => x.code === qrCode);
+    if(q && currentUser.respondidas.includes(qrCode)){
+      document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+      document.getElementById('done-name').textContent = currentUser.nome;
+      document.getElementById('done-pts').textContent = currentUser.pontos;
+      document.getElementById('screen-done').classList.add('active');
+      window.scrollTo(0,0); return;
+    }
+  }
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
 function showAlert(msg){ const a=document.getElementById('login-alert'); a.textContent=msg; a.style.display='block'; }
 
 async function callScript(action, payload){
