@@ -324,7 +324,7 @@ async function docadastro(){
 
   showLoading();
   try {
-    currentUser = {nome, matricula:mat, setor, pontos:0, respondidas:[]};
+    currentUser = {nome, matricula:mat, setor, pontos:0, acertos:0, erros:0, respondidas:[]};
     await callScript('saveParticipant', currentUser);
     hideLoading(); continueAfterLogin();
   } catch(e){ hideLoading(); alerta.textContent='Erro de conexão. Tente novamente.'; alerta.style.display='block'; }
@@ -364,7 +364,8 @@ async function answerQuestion(originalIdx, btn){
   document.querySelectorAll('.option').forEach(b=>{b.disabled=true;});
   const correct = currentQ.correct === originalIdx;
   btn.classList.add(correct?'selected-correct':'selected-wrong');
-  if(correct) currentUser.pontos += 100;
+  if(correct){ currentUser.pontos += 100; currentUser.acertos = (currentUser.acertos||0) + 1; }
+  else { currentUser.erros = (currentUser.erros||0) + 1; }
   currentUser.respondidas.push(currentQ.code);
   document.getElementById('q-user-pts').textContent = currentUser.pontos;
   const res = document.getElementById('q-result'); res.style.display='block';
