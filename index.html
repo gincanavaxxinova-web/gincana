@@ -71,6 +71,24 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .score-mini{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);margin-bottom:10px;}
 .score-mini-name{font-size:13px;font-weight:700;color:var(--text);}
 .score-badge{background:var(--gold-light);color:var(--gold);border:1px solid var(--gold-border);border-radius:20px;padding:3px 10px;font-size:12px;font-weight:800;}
+.winner-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;}
+.winner-box{background:var(--bg-white);border-radius:16px;padding:2rem 1.5rem;text-align:center;max-width:360px;width:100%;position:relative;overflow:hidden;}
+.winner-box::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--gold);}
+.chest{font-size:64px;animation:chestOpen 1s ease forwards;}
+@keyframes chestOpen{0%{transform:scale(0.5);opacity:0;}50%{transform:scale(1.2);}100%{transform:scale(1);opacity:1;}}
+.winner-title{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:var(--gold);margin:12px 0 6px;}
+.winner-name{font-size:22px;font-weight:900;color:var(--text);margin-bottom:4px;}
+.winner-pts{font-size:18px;font-weight:800;color:var(--gold);margin-bottom:16px;}
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:8px;margin:16px 0;height:60px;}
+.podium-bar{background:var(--gold);border-radius:4px 4px 0 0;width:40px;display:flex;align-items:center;justify-content:center;}
+.podium-bar span{font-size:18px;}
+.podium-1{height:60px;animation:riseBar 0.8s 0.5s ease both;}
+.podium-2{height:40px;animation:riseBar 0.8s 0.7s ease both;}
+.podium-3{height:28px;animation:riseBar 0.8s 0.9s ease both;}
+@keyframes riseBar{from{height:0;opacity:0;}to{opacity:1;}}
+.confete{position:absolute;width:8px;height:8px;border-radius:2px;animation:fall linear forwards;}
+@keyframes fall{0%{transform:translateY(-20px) rotate(0deg);opacity:1;}100%{transform:translateY(110vh) rotate(720deg);opacity:0;}}
+.winner-sub{font-size:12px;color:var(--text-muted);margin-top:8px;line-height:1.5;}
 </style>
 </head>
 <body>
@@ -203,6 +221,24 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <button class="btn btn-outline" onclick="showRanking()">Ver ranking 🏅</button>
   </div>
 </div>
+</div>
+
+<!-- TELA VENCEDOR -->
+<div id="winner-overlay" class="winner-overlay" style="display:none;" onclick="closeWinner()">
+  <div class="winner-box" id="winner-box" onclick="event.stopPropagation()">
+    <div class="chest">🏆</div>
+    <div class="winner-title">🎉 Temos um vencedor!</div>
+    <div class="winner-name" id="winner-name"></div>
+    <div class="winner-pts" id="winner-pts"></div>
+    <div class="podium">
+      <div class="podium-bar podium-2"><span>🥈</span></div>
+      <div class="podium-bar podium-1"><span>🥇</span></div>
+      <div class="podium-bar podium-3"><span>🥉</span></div>
+    </div>
+    <div class="winner-sub">Atingiu 5.000 pontos e conquistou o tesouro da qualidade!</div>
+    <div style="height:12px;"></div>
+    <button class="btn btn-gold" onclick="closeWinner()">Ver ranking 🏅</button>
+  </div>
 </div>
 
 <div id="screen-ranking" class="screen">
@@ -391,7 +427,60 @@ async function answerQuestion(originalIdx, btn){
   hideLoading();
 }
 
-function afterQuestion(){ showRanking(); }
+function checkWinner(){
+  if(currentUser && currentUser.pontos >= 5000){
+    showWinner(currentUser);
+    notifyWinner(currentUser);
+    return true;
+  }
+  return false;
+}
+
+function showWinner(user){
+  document.getElementById('winner-name').textContent = user.nome;
+  document.getElementById('winner-pts').textContent = user.pontos + ' pontos';
+  const overlay = document.getElementById('winner-overlay');
+  overlay.style.display = 'flex';
+  spawnConfetes();
+}
+
+function closeWinner(){
+  document.getElementById('winner-overlay').style.display = 'none';
+  showRanking();
+}
+
+function spawnConfetes(){
+  const cores = ['#A0782A','#D4B06A','#F5EDD8','#1A1A1A','#E8E8E8'];
+  const box = document.getElementById('winner-overlay');
+  for(let i = 0; i < 60; i++){
+    const c = document.createElement('div');
+    c.className = 'confete';
+    c.style.left = Math.random() * 100 + 'vw';
+    c.style.background = cores[Math.floor(Math.random()*cores.length)];
+    c.style.animationDuration = (2 + Math.random() * 3) + 's';
+    c.style.animationDelay = (Math.random() * 2) + 's';
+    c.style.width = (6 + Math.random()*8) + 'px';
+    c.style.height = (6 + Math.random()*8) + 'px';
+    box.appendChild(c);
+    setTimeout(()=>{ if(c.parentNode) c.parentNode.removeChild(c); }, 6000);
+  }
+}
+
+async function notifyWinner(user){
+  try {
+    await callScript('notifyWinner', {
+      nome: user.nome,
+      pontos: user.pontos,
+      setor: user.setor,
+      email: 'jean.silva@vaxxinova.com.br'
+    });
+  } catch(e){ console.log('Notificacao nao enviada', e); }
+}
+
+function afterQuestion(){
+  if(checkWinner()) return;
+  showRanking();
+}
 
 async function showRanking(){
   showLoading();
