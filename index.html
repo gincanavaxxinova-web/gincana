@@ -84,19 +84,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .winner-sub{font-size:12px;color:var(--text-muted);margin-top:8px;line-height:1.5;}
 
 /* Partículas */
-.w-particle{position:fixed;pointer-events:none;z-index:3;border-radius:3px;animation:wFall linear forwards;}
+.w-particle{position:fixed;pointer-events:none;z-index:10000;border-radius:3px;animation:wFall linear forwards;}
 @keyframes wFall{0%{opacity:1;transform:translateY(-10px) rotate(0deg);}100%{opacity:0;transform:translateY(110vh) rotate(800deg);}}
 
 /* Estrelas cadentes */
-.w-star{position:fixed;pointer-events:none;z-index:3;animation:wStarFall linear forwards;}
+.w-star{position:fixed;pointer-events:none;z-index:10000;animation:wStarFall linear forwards;}
 @keyframes wStarFall{0%{opacity:1;transform:translate(0,0) scale(1);}100%{opacity:0;transform:translate(var(--tx),var(--ty)) scale(0.3);}}
 
 /* Fogos */
-.w-fogo{position:fixed;pointer-events:none;z-index:3;font-size:28px;animation:wFogoExplode ease-out forwards;}
+.w-fogo{position:fixed;pointer-events:none;z-index:10000;font-size:28px;animation:wFogoExplode ease-out forwards;}
 @keyframes wFogoExplode{0%{transform:translate(0,0) scale(0.2);opacity:1;}40%{transform:translate(var(--tx),var(--ty)) scale(1.4);opacity:1;}100%{transform:translate(var(--tx2),var(--ty2)) scale(0.5);opacity:0;}}
 
 /* Bichinhos dançando */
-.w-animal{position:fixed;pointer-events:none;z-index:3;font-size:32px;animation:wAnimalDance ease-in-out infinite;}
+.w-animal{position:fixed;pointer-events:none;z-index:10000;font-size:32px;animation:wAnimalDance ease-in-out infinite;}
 @keyframes wAnimalDance{0%{transform:translateY(0) rotate(-10deg) scale(1);}25%{transform:translateY(-30px) rotate(10deg) scale(1.1);}50%{transform:translateY(0) rotate(-10deg) scale(1);}75%{transform:translateY(-20px) rotate(5deg) scale(1.05);}100%{transform:translateY(0) rotate(-10deg) scale(1);}}
 .w-animal.left{animation-name:wAnimalDanceLeft;}
 @keyframes wAnimalDanceLeft{0%{transform:translateY(0) rotate(10deg) scale(1);}25%{transform:translateY(-25px) rotate(-15deg) scale(1.1);}50%{transform:translateY(0) rotate(10deg) scale(1);}75%{transform:translateY(-15px) rotate(-5deg) scale(1.05);}100%{transform:translateY(0) rotate(10deg) scale(1);}}
@@ -394,12 +394,30 @@ function continueAfterLogin(){
   if(!qrCode){ showScreen('screen-noqr'); return; }
   const q = QUESTIONS.find(x => x.code === qrCode);
   if(!q){ showScreen('screen-noqr'); return; }
+
+  // Verifica se já há um vencedor no ranking
+  const vencedor = rankingData.find(p => p.pontos >= 5000);
+  if(vencedor && vencedor.matricula !== currentUser.matricula){
+    showVencedorExistente(vencedor); return;
+  }
+
   if(currentUser.respondidas.includes(qrCode)){
     document.getElementById('done-name').textContent = currentUser.nome;
     document.getElementById('done-pts').textContent = currentUser.pontos;
     showScreen('screen-done'); return;
   }
   openQuestion(q);
+}
+
+function showVencedorExistente(vencedor){
+  document.getElementById('winner-name').textContent = vencedor.nome;
+  document.getElementById('winner-pts').textContent = vencedor.pontos + ' pontos';
+  document.getElementById('winner-overlay').style.display = 'flex';
+  spawnDancingAnimals();
+  spawnFogos(); spawnStarRain(); spawnConfete();
+  winnerInterval = setInterval(()=>{
+    spawnStarRain(); spawnConfete(); spawnFogos();
+  }, 1800);
 }
 
 function openQuestion(q){
@@ -428,14 +446,22 @@ async function answerQuestion(originalIdx, btn){
   else { currentUser.erros = (currentUser.erros||0) + 1; }
   currentUser.respondidas.push(currentQ.code);
   document.getElementById('q-user-pts').textContent = currentUser.pontos;
+  showLoading();
+  try { await callScript('saveParticipant', currentUser); } catch(e){}
+  hideLoading();
+
+  // Dispara animação imediatamente se vencedor
+  if(currentUser.pontos >= 5000){
+    showWinner(currentUser);
+    notifyWinner(currentUser);
+    return;
+  }
+
   const res = document.getElementById('q-result'); res.style.display='block';
   res.innerHTML = correct
     ? `<div class="result-box success"><div class="result-icon">🎯</div><div class="result-title">Resposta correta!</div><div class="result-pts">+100 pontos</div><div class="result-sub">Continue procurando os outros QR Codes!</div></div>`
     : `<div class="result-box fail"><div class="result-icon">❌</div><div class="result-title">Resposta incorreta</div><div class="result-sub">Não foi dessa vez. Continue procurando os outros QR Codes!</div></div>`;
   document.getElementById('btn-after-q').style.display='block';
-  showLoading();
-  try { await callScript('saveParticipant', currentUser); } catch(e){}
-  hideLoading();
 }
 
 function checkWinner(){
@@ -489,18 +515,18 @@ function closeWinner(){
 }
 
 function spawnDancingAnimals(){
-  const animais = ['🐄','🐔','🐖','🐄','🐔','🐖'];
-  const positions = [
-    {left:'2%',bottom:'10%'},{left:'12%',bottom:'5%'},{left:'22%',bottom:'12%'},
-    {right:'2%',bottom:'10%'},{right:'12%',bottom:'5%'},{right:'22%',bottom:'12%'}
-  ];
+  const animais = ['🐄','🐔','🐖','🐟','🐱','🐶','🐄','🐔','🐖','🐟','🐱','🐶','🐄','🐔','🐖'];
   animais.forEach((a,i)=>{
     const el = document.createElement('div');
-    el.className = 'w-animal' + (i>=3?' left':'');
+    el.className = 'w-animal' + (Math.random()>0.5?' left':'');
     el.textContent = a;
-    el.style.cssText = Object.entries(positions[i]).map(([k,v])=>k+':'+v).join(';');
-    el.style.animationDuration = (0.8+Math.random()*0.4)+'s';
-    el.style.animationDelay = (Math.random()*0.3)+'s';
+    el.style.position = 'fixed';
+    el.style.left = (Math.random()*90)+'%';
+    el.style.bottom = (Math.random()*30)+'%';
+    el.style.fontSize = (24+Math.random()*20)+'px';
+    el.style.animationDuration = (0.5+Math.random()*0.6)+'s';
+    el.style.animationDelay = (Math.random()*0.5)+'s';
+    el.style.zIndex = '10000';
     document.getElementById('winner-overlay').appendChild(el);
   });
 }
