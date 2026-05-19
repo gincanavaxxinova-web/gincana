@@ -74,7 +74,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 </style>
 </head>
 <body>
-
 <svg class="hex-bg" viewBox="0 0 400 900" xmlns="http://www.w3.org/2000/svg">
 <g fill="none" stroke="#888" stroke-width="1">
 <polygon points="60,10 100,32 100,78 60,100 20,78 20,32"/>
@@ -222,9 +221,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <script>
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzEPOYG2XwaQeKVL4p4MyDFRQ-eo_thoB1ee0Ht6sBnr4NLMAMQd89HX6Vl2rvLn42C/exec';
 
-const SETORES = ["Almoxarifado","Artes","Assuntos Reg. Internacionais","Assuntos Regulatórios","Autógenas","Bacterinas","BTS","Coccidiose","Comercial","Contabilidade","Cravação","Cultura de Tecidos","Embalagem","Engenharia","Envase I","Envase II","Envase III","Controle de Qualidade - Escritório","Expedição","FMV","Formulação","HSE","Laboratório de Antígenos","Lavagem e Esterilização I","Lavagem e Esterilização II","Controle de Qualidade - LEB","Controle de Qualidade - LEA","Controle de Qualidade - LEE","Controle de Qualidade - LEFQE","Controle de Qualidade - LEVS","Liofilização","Manutenção","Marketing","Meios de Cultura","Metrologia","Logística","OPEX","Ovos Embrionados","P&D","PAC","PCP","Raiva","SAC","Suprimento","TI","Outros"];
+const SETORES = ["Almoxarifado","Artes","Assuntos Reg. Internacionais","Assuntos Regulatórios","Autógenas","Bacterinas","BTS","Coccidiose","Comercial","Contabilidade","Cravação","Cultura de Tecidos","Embalagem","Engenharia","Envase I","Envase II","Envase III","Controle de Qualidade - Escritório","Expedição","FMV","Formulação","HSE","Laboratório de Antígenos","Lavagem e Esterilização I","Lavagem e Esterilização II","Controle de Qualidade - LEB","Controle de Qualidade - LEA","Controle de Qualidade - LEE","Controle de Qualidade - LEFQE","Controle de Qualidade - LEVS","Liofilização","Manutenção","Marketing","Meios de Cultura","Metrologia","Logística","OPEX","Ovos Embrionados","P&D","PAC","PCP","Raiva","SAC","Suprimento","TI","Garantia da Qualidade - Validação"];
 
-// Mapeamento código aleatório → índice da pergunta
 const QR_MAP = {
   'tpkAbZtV': 0, 'il9nw4y6': 1, '4StyY0yU': 2, 'M7Vpecyb': 3,
   'BhmSPhuz': 4, 'MKVxVh82': 5, 'AOv2YL5k': 6, 'UUBEx6pR': 7,
@@ -283,7 +281,6 @@ SETORES.forEach(s => { const o = document.createElement('option'); o.value=s; o.
 function showLoading(){ document.getElementById('loading-overlay').style.display='flex'; }
 function hideLoading(){ document.getElementById('loading-overlay').style.display='none'; }
 function showScreen(id){
-  // Se voltar para noqr mas tem QR Code na URL já respondido, mostra tela correta
   if(id === 'screen-noqr' && qrCode && currentUser){
     const q = QUESTIONS.find(x => x.code === qrCode);
     if(q && currentUser.respondidas.includes(qrCode)){
@@ -330,14 +327,12 @@ async function docadastro(){
   const nome = document.getElementById('inp-nome').value.trim();
   const setor = document.getElementById('inp-setor').value;
   const alerta = document.getElementById('cadastro-alert');
-
   const palavras = nome.trim().split(' ').filter(p => p.length > 0);
   if(!nome || palavras.length < 2 || palavras[0].length < 3 || palavras[1].length < 3){
     alerta.textContent = !nome ? 'Preencha todos os campos!' : 'Seu nome está incompleto.';
     alerta.style.display='block'; return;
   }
   if(!setor){ alerta.textContent='Selecione seu setor.'; alerta.style.display='block'; return; }
-
   showLoading();
   try {
     currentUser = {nome, matricula:mat, setor, pontos:0, acertos:0, erros:0, respondidas:[]};
@@ -405,18 +400,70 @@ async function showRanking(){
   hideLoading(); showScreen('screen-ranking');
 }
 
+let rankingData = [];
+let rankingPage = 0;
+const POR_PAGINA = 50;
+
 function renderRanking(data){
+  rankingData = data || [];
+  rankingPage = 0;
+  // Se tem usuário logado, achar sua página
+  if(currentUser){
+    const idx = rankingData.findIndex(p => p.matricula === currentUser.matricula);
+    if(idx >= 0) rankingPage = Math.floor(idx / POR_PAGINA);
+  }
+  renderRankingPage();
+}
+
+function renderRankingPage(){
   const list = document.getElementById('ranking-list');
   list.innerHTML='<p class="section-label">Classificação atual</p>';
-  if(!data||data.length===0){ list.innerHTML+='<p style="text-align:center;color:var(--text-muted);padding:20px;">Nenhum participante ainda.</p>'; return; }
-  data.forEach((p,i)=>{
+  if(!rankingData||rankingData.length===0){
+    list.innerHTML+='<p style="text-align:center;color:var(--text-muted);padding:20px;">Nenhum participante ainda.</p>';
+    return;
+  }
+
+  const inicio = rankingPage * POR_PAGINA;
+  const fim = Math.min(inicio + POR_PAGINA, rankingData.length);
+  const pagina = rankingData.slice(inicio, fim);
+
+  pagina.forEach((p,i)=>{
+    const posGlobal = inicio + i;
     const isMe = currentUser && p.matricula===currentUser.matricula;
-    const pc = i===0?'r1':i===1?'r2':i===2?'r3':'rn';
+    const pc = posGlobal===0?'r1':posGlobal===1?'r2':posGlobal===2?'r3':'rn';
     const el = document.createElement('div');
     el.className='rank-item'+(isMe?' rank-me':'');
-    el.innerHTML=`<div class="rank-pos ${pc}">${i+1}</div><div class="rank-info"><div class="rank-name">${p.nome}${isMe?'<span class="tag-you">VOCÊ</span>':''}</div><div class="rank-dept">${p.setor}</div></div><div class="rank-pts">${p.pontos} pts</div>`;
+    el.innerHTML=`<div class="rank-pos ${pc}">${posGlobal+1}</div><div class="rank-info"><div class="rank-name">${p.nome}${isMe?'<span class="tag-you">VOCÊ</span>':''}</div><div class="rank-dept">${p.setor}</div></div><div class="rank-pts">${p.pontos} pts</div>`;
     list.appendChild(el);
   });
+
+  // Paginação
+  const totalPaginas = Math.ceil(rankingData.length / POR_PAGINA);
+  const navDiv = document.createElement('div');
+  navDiv.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:10px 0 0;gap:8px;';
+
+  const btnAnterior = document.createElement('button');
+  btnAnterior.className = 'btn btn-outline';
+  btnAnterior.style.cssText = 'width:auto;padding:8px 16px;font-size:12px;';
+  btnAnterior.textContent = '← Anterior';
+  btnAnterior.style.visibility = rankingPage > 0 ? 'visible' : 'hidden';
+  btnAnterior.onclick = () => { rankingPage--; renderRankingPage(); window.scrollTo(0,0); };
+
+  const pageInfo = document.createElement('span');
+  pageInfo.style.cssText = 'font-size:11px;color:var(--text-muted);font-weight:600;';
+  pageInfo.textContent = `${rankingPage+1} / ${totalPaginas}`;
+
+  const btnProxima = document.createElement('button');
+  btnProxima.className = 'btn btn-outline';
+  btnProxima.style.cssText = 'width:auto;padding:8px 16px;font-size:12px;';
+  btnProxima.textContent = 'Próxima →';
+  btnProxima.style.visibility = rankingPage < totalPaginas - 1 ? 'visible' : 'hidden';
+  btnProxima.onclick = () => { rankingPage++; renderRankingPage(); window.scrollTo(0,0); };
+
+  navDiv.appendChild(btnAnterior);
+  navDiv.appendChild(pageInfo);
+  navDiv.appendChild(btnProxima);
+  list.appendChild(navDiv);
 }
 </script>
 </body>
