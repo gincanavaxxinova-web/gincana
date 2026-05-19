@@ -332,7 +332,7 @@ async function docadastro(){
   const alerta = document.getElementById('cadastro-alert');
 
   const palavras = nome.trim().split(' ').filter(p => p.length > 0);
-  if(!nome || palavras.length < 2 || palavras[1].length < 3){
+  if(!nome || palavras.length < 2 || palavras[0].length < 3 || palavras[1].length < 3){
     alerta.textContent = !nome ? 'Preencha todos os campos!' : 'Seu nome está incompleto.';
     alerta.style.display='block'; return;
   }
