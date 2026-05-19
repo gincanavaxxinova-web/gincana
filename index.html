@@ -71,24 +71,27 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .score-mini{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);margin-bottom:10px;}
 .score-mini-name{font-size:13px;font-weight:700;color:var(--text);}
 .score-badge{background:var(--gold-light);color:var(--gold);border:1px solid var(--gold-border);border-radius:20px;padding:3px 10px;font-size:12px;font-weight:800;}
-.winner-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;}
-.winner-box{background:var(--bg-white);border-radius:16px;padding:2rem 1.5rem;text-align:center;max-width:360px;width:100%;position:relative;overflow:hidden;}
-.winner-box::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--gold);}
-.chest{font-size:64px;animation:chestOpen 1s ease forwards;}
-@keyframes chestOpen{0%{transform:scale(0.5);opacity:0;}50%{transform:scale(1.2);}100%{transform:scale(1);opacity:1;}}
-.winner-title{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:var(--gold);margin:12px 0 6px;}
-.winner-name{font-size:22px;font-weight:900;color:var(--text);margin-bottom:4px;}
-.winner-pts{font-size:18px;font-weight:800;color:var(--gold);margin-bottom:16px;}
-.podium{display:flex;align-items:flex-end;justify-content:center;gap:8px;margin:16px 0;height:60px;}
-.podium-bar{background:var(--gold);border-radius:4px 4px 0 0;width:40px;display:flex;align-items:center;justify-content:center;}
-.podium-bar span{font-size:18px;}
-.podium-1{height:60px;animation:riseBar 0.8s 0.5s ease both;}
-.podium-2{height:40px;animation:riseBar 0.8s 0.7s ease both;}
-.podium-3{height:28px;animation:riseBar 0.8s 0.9s ease both;}
-@keyframes riseBar{from{height:0;opacity:0;}to{opacity:1;}}
-.confete{position:absolute;width:8px;height:8px;border-radius:2px;animation:fall linear forwards;}
-@keyframes fall{0%{transform:translateY(-20px) rotate(0deg);opacity:1;}100%{transform:translateY(110vh) rotate(720deg);opacity:0;}}
-.winner-sub{font-size:12px;color:var(--text-muted);margin-top:8px;line-height:1.5;}
+.winner-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.92);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;overflow:hidden;}
+.winner-box{background:var(--bg-white);border-radius:16px;padding:2rem 1.5rem;text-align:center;max-width:360px;width:100%;position:relative;z-index:2;animation:boxAppear 0.8s ease forwards;}
+@keyframes boxAppear{0%{transform:scale(0.3);opacity:0;}60%{transform:scale(1.08);}100%{transform:scale(1);opacity:1;}}
+.winner-box::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--gold);border-radius:16px 16px 0 0;}
+.chest{font-size:72px;animation:chestOpen 1.2s ease forwards;display:block;margin-bottom:8px;}
+@keyframes chestOpen{0%{transform:scale(0.2) rotate(-20deg);opacity:0;}40%{transform:scale(1.3) rotate(10deg);}70%{transform:scale(0.95) rotate(-5deg);}100%{transform:scale(1) rotate(0deg);opacity:1;}}
+.winner-title{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:2.5px;color:var(--gold);margin:8px 0 6px;}
+.winner-name{font-size:24px;font-weight:900;color:var(--text);margin-bottom:4px;animation:nameAppear 0.6s 0.8s ease both;}
+@keyframes nameAppear{from{transform:translateY(20px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+.winner-pts{font-size:20px;font-weight:800;color:var(--gold);margin-bottom:8px;animation:nameAppear 0.6s 1s ease both;}
+.winner-animals{font-size:28px;letter-spacing:6px;margin:10px 0;animation:animalsAppear 0.8s 1.2s ease both;}
+@keyframes animalsAppear{from{transform:scale(0);opacity:0;}60%{transform:scale(1.2);}to{transform:scale(1);opacity:1;}}
+.winner-sub{font-size:12px;color:var(--text-muted);margin-top:8px;line-height:1.5;animation:nameAppear 0.6s 1.4s ease both;}
+.particle{position:fixed;pointer-events:none;z-index:1;animation:particleFall linear forwards;}
+@keyframes particleFall{0%{opacity:1;transform:translateY(0) rotate(0deg) scale(1);}100%{opacity:0;transform:translateY(105vh) rotate(720deg) scale(0.3);}}
+.burst{position:fixed;pointer-events:none;z-index:1;font-size:24px;animation:burstOut ease-out forwards;}
+@keyframes burstOut{0%{transform:translate(0,0) scale(0);opacity:1;}100%{opacity:0;transform:translate(var(--tx),var(--ty)) scale(1.5);}}
+.star{position:fixed;pointer-events:none;z-index:1;color:var(--gold);animation:starTwinkle ease-in-out forwards;}
+@keyframes starTwinkle{0%{transform:scale(0) rotate(0deg);opacity:1;}50%{transform:scale(1.5) rotate(180deg);opacity:1;}100%{transform:scale(0) rotate(360deg);opacity:0;}}
+.flash{position:fixed;top:0;left:0;right:0;bottom:0;background:radial-gradient(circle at center, rgba(160,120,42,0.6) 0%, transparent 70%);z-index:1;animation:flashOut 0.8s ease forwards;pointer-events:none;}
+@keyframes flashOut{0%{opacity:1;}100%{opacity:0;}}
 </style>
 </head>
 <body>
@@ -224,19 +227,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 </div>
 
 <!-- TELA VENCEDOR -->
-<div id="winner-overlay" class="winner-overlay" style="display:none;" onclick="closeWinner()">
-  <div class="winner-box" id="winner-box" onclick="event.stopPropagation()">
-    <div class="chest">🏆</div>
+<div id="winner-overlay" class="winner-overlay" style="display:none;">
+  <div class="winner-box" id="winner-box">
+    <span class="chest">🏆</span>
     <div class="winner-title">🎉 Temos um vencedor!</div>
     <div class="winner-name" id="winner-name"></div>
     <div class="winner-pts" id="winner-pts"></div>
-    <div class="podium">
-      <div class="podium-bar podium-2"><span>🥈</span></div>
-      <div class="podium-bar podium-1"><span>🥇</span></div>
-      <div class="podium-bar podium-3"><span>🥉</span></div>
-    </div>
+    <div class="winner-animals">🐄 🐔 🐖</div>
     <div class="winner-sub">Atingiu 5.000 pontos e conquistou o tesouro da qualidade!</div>
-    <div style="height:12px;"></div>
+    <div style="height:14px;"></div>
     <button class="btn btn-gold" onclick="closeWinner()">Ver ranking 🏅</button>
   </div>
 </div>
@@ -441,28 +440,101 @@ function showWinner(user){
   document.getElementById('winner-pts').textContent = user.pontos + ' pontos';
   const overlay = document.getElementById('winner-overlay');
   overlay.style.display = 'flex';
-  spawnConfetes();
+  // Sequência de animações
+  spawnFlash();
+  setTimeout(spawnBursts, 200);
+  setTimeout(spawnParticles, 400);
+  setTimeout(spawnStars, 600);
+  setTimeout(spawnAnimals, 800);
+  // Repetir partículas
+  const interval = setInterval(()=>{
+    spawnParticles();
+    spawnStars();
+  }, 2000);
+  setTimeout(()=>clearInterval(interval), 10000);
 }
 
 function closeWinner(){
   document.getElementById('winner-overlay').style.display = 'none';
+  // Limpar partículas
+  document.querySelectorAll('.particle,.burst,.star,.flash').forEach(e=>e.remove());
   showRanking();
 }
 
-function spawnConfetes(){
-  const cores = ['#A0782A','#D4B06A','#F5EDD8','#1A1A1A','#E8E8E8'];
-  const box = document.getElementById('winner-overlay');
-  for(let i = 0; i < 60; i++){
-    const c = document.createElement('div');
-    c.className = 'confete';
-    c.style.left = Math.random() * 100 + 'vw';
-    c.style.background = cores[Math.floor(Math.random()*cores.length)];
-    c.style.animationDuration = (2 + Math.random() * 3) + 's';
-    c.style.animationDelay = (Math.random() * 2) + 's';
-    c.style.width = (6 + Math.random()*8) + 'px';
-    c.style.height = (6 + Math.random()*8) + 'px';
-    box.appendChild(c);
-    setTimeout(()=>{ if(c.parentNode) c.parentNode.removeChild(c); }, 6000);
+function spawnFlash(){
+  const f = document.createElement('div');
+  f.className = 'flash';
+  document.body.appendChild(f);
+  setTimeout(()=>f.remove(), 1000);
+}
+
+function spawnBursts(){
+  const emojis = ['🎆','🎇','✨','💥','🌟','⭐','🎊','🎉'];
+  const cx = window.innerWidth/2, cy = window.innerHeight/2;
+  for(let i=0;i<16;i++){
+    const b = document.createElement('div');
+    b.className = 'burst';
+    b.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+    const angle = (i/16)*Math.PI*2;
+    const dist = 80 + Math.random()*150;
+    b.style.left = cx + 'px';
+    b.style.top = cy + 'px';
+    b.style.setProperty('--tx', Math.cos(angle)*dist + 'px');
+    b.style.setProperty('--ty', Math.sin(angle)*dist + 'px');
+    b.style.animationDuration = (0.8+Math.random()*0.6)+'s';
+    b.style.animationDelay = (Math.random()*0.3)+'s';
+    document.body.appendChild(b);
+    setTimeout(()=>b.remove(), 2000);
+  }
+}
+
+function spawnParticles(){
+  const cores = ['#A0782A','#D4B06A','#F5EDD8','#fff','#FFD700','#FFA500'];
+  for(let i=0;i<50;i++){
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random()*100+'vw';
+    p.style.top = '-20px';
+    p.style.width = (5+Math.random()*10)+'px';
+    p.style.height = (5+Math.random()*10)+'px';
+    p.style.borderRadius = Math.random()>0.5?'50%':'2px';
+    p.style.background = cores[Math.floor(Math.random()*cores.length)];
+    p.style.animationDuration = (2+Math.random()*3)+'s';
+    p.style.animationDelay = (Math.random()*1.5)+'s';
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(), 6000);
+  }
+}
+
+function spawnStars(){
+  for(let i=0;i<20;i++){
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.textContent = Math.random()>0.5?'⭐':'🌟';
+    s.style.left = Math.random()*100+'vw';
+    s.style.top = Math.random()*100+'vh';
+    s.style.fontSize = (16+Math.random()*24)+'px';
+    s.style.animationDuration = (1+Math.random()*2)+'s';
+    s.style.animationDelay = (Math.random()*1)+'s';
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(), 4000);
+  }
+}
+
+function spawnAnimals(){
+  const animais = ['🐄','🐔','🐖'];
+  for(let i=0;i<12;i++){
+    const a = document.createElement('div');
+    a.className = 'particle';
+    a.textContent = animais[Math.floor(Math.random()*animais.length)];
+    a.style.left = Math.random()*100+'vw';
+    a.style.top = '-30px';
+    a.style.fontSize = (20+Math.random()*20)+'px';
+    a.style.background = 'transparent';
+    a.style.animationDuration = (3+Math.random()*3)+'s';
+    a.style.animationDelay = (Math.random()*2)+'s';
+    document.body.appendChild(a);
+    setTimeout(()=>a.remove(), 8000);
   }
 }
 
