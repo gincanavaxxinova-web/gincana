@@ -327,8 +327,10 @@ async function docadastro(){
   const nome = document.getElementById('inp-nome').value.trim();
   const setor = document.getElementById('inp-setor').value;
   const alerta = document.getElementById('cadastro-alert');
+  const conectivos = ['da','de','do','das','dos','e','di','du'];
   const palavras = nome.trim().split(' ').filter(p => p.length > 0);
-  if(!nome || palavras.length < 2 || palavras[1].length < 3){
+  const palavrasValidas = palavras.filter((p, i) => i > 0 && !conectivos.includes(p.toLowerCase()));
+  if(!nome || palavras.length < 2 || palavrasValidas.length === 0 || palavrasValidas[0].length < 3){
     alerta.textContent = !nome ? 'Preencha todos os campos!' : 'Seu nome está incompleto.';
     alerta.style.display='block'; return;
   }
