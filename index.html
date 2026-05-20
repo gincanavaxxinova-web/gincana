@@ -390,15 +390,28 @@ async function docadastro(){
   } catch(e){ hideLoading(); alerta.textContent='Erro de conexão. Tente novamente.'; alerta.style.display='block'; }
 }
 
-function continueAfterLogin(){
+async function continueAfterLogin(){
   if(!qrCode){ showScreen('screen-noqr'); return; }
   const q = QUESTIONS.find(x => x.code === qrCode);
   if(!q){ showScreen('screen-noqr'); return; }
+
+  // Busca ranking atualizado para verificar se já há vencedor
+  showLoading();
+  try {
+    const res = await callScript('getRanking', {});
+    if(res.ok) rankingData = res.data;
+  } catch(e){}
+  hideLoading();
 
   // Verifica se já há um vencedor no ranking
   const vencedor = rankingData.find(p => p.pontos >= 5000);
   if(vencedor && vencedor.matricula !== currentUser.matricula){
     showVencedorExistente(vencedor); return;
+  }
+
+  // Vencedor abrindo próprio QR
+  if(vencedor && vencedor.matricula === currentUser.matricula){
+    showWinner(currentUser); return;
   }
 
   if(currentUser.respondidas.includes(qrCode)){
