@@ -99,11 +99,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 @keyframes wAnimalDance{0%{transform:translateY(0) rotate(-10deg) scale(1);}25%{transform:translateY(-28px) rotate(12deg) scale(1.15);}50%{transform:translateY(0) rotate(-10deg) scale(1);}75%{transform:translateY(-18px) rotate(6deg) scale(1.08);}100%{transform:translateY(0) rotate(-10deg) scale(1);}}
 .w-animal.mirror{animation-name:wAnimalDanceMirror;}
 @keyframes wAnimalDanceMirror{0%{transform:translateY(0) rotate(10deg) scale(1) scaleX(-1);}25%{transform:translateY(-28px) rotate(-12deg) scale(1.15) scaleX(-1);}50%{transform:translateY(0) rotate(10deg) scale(1) scaleX(-1);}75%{transform:translateY(-18px) rotate(-6deg) scale(1.08) scaleX(-1);}100%{transform:translateY(0) rotate(10deg) scale(1) scaleX(-1);}}
-/* Bichinhos caminhando */
-.w-walker{position:fixed;pointer-events:none;z-index:10000;font-size:28px;animation:wWalkRight linear infinite;}
-@keyframes wWalkRight{0%{transform:translateX(-60px) scaleX(1);}49%{transform:translateX(110vw) scaleX(1);}50%{transform:translateX(110vw) scaleX(-1);}100%{transform:translateX(-60px) scaleX(-1);}}
-.w-walker.rtl{animation-name:wWalkLeft;}
-@keyframes wWalkLeft{0%{transform:translateX(110vw) scaleX(-1);}49%{transform:translateX(-60px) scaleX(-1);}50%{transform:translateX(-60px) scaleX(1);}100%{transform:translateX(110vw) scaleX(1);}}
+
 
 /* Flash inicial */
 .w-flash{position:fixed;top:0;left:0;right:0;bottom:0;background:radial-gradient(circle at center,rgba(255,215,0,0.8) 0%,transparent 70%);z-index:2;pointer-events:none;animation:wFlashOut 1s ease forwards;}
@@ -546,17 +542,7 @@ function spawnDancingAnimals(){
     overlay.appendChild(er);
   });
 
-  // Fila caminhando na base — da esquerda para direita
-  const walkersBottom = ['🐄','🐔','🐖','🐱','🐶','🐟'];
-  walkersBottom.forEach((a,i)=>{
-    const w = document.createElement('div');
-    w.className = 'w-walker' + (i%2===0?'':' rtl');
-    w.textContent = a;
-    w.style.bottom = (2 + (i%2)*5)+'%';
-    w.style.animationDuration = (6+Math.random()*4)+'s';
-    w.style.animationDelay = (i*0.8)+'s';
-    overlay.appendChild(w);
-  });
+
 }
 
 function spawnFogos(){
