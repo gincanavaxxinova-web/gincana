@@ -71,6 +71,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .score-mini{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);margin-bottom:10px;}
 .score-mini-name{font-size:13px;font-weight:700;color:var(--text);}
 .score-badge{background:var(--gold-light);color:var(--gold);border:1px solid var(--gold-border);border-radius:20px;padding:3px 10px;font-size:12px;font-weight:800;}
+.explore-badge{display:inline-block;background:#F0F0F0;color:#888;border:1px solid #CCC;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;text-align:center;margin-bottom:8px;width:100%;}
 .winner-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.92);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;overflow:hidden;}
 .winner-box{background:var(--bg-white);border-radius:16px;padding:2rem 1.5rem;text-align:center;max-width:360px;width:100%;position:relative;z-index:10;animation:boxAppear 1s 1.5s ease both;}
 @keyframes boxAppear{0%{transform:scale(0.3);opacity:0;}60%{transform:scale(1.08);}100%{transform:scale(1);opacity:1;}}
@@ -249,6 +250,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="winner-sub">Atingiu 5.000 pontos e conquistou o tesouro da qualidade!</div>
     <div style="height:14px;"></div>
     <button class="btn btn-gold" onclick="closeWinner()">Ver ranking 🏅</button>
+    <div style="height:8px;"></div>
+    <button class="btn btn-outline" id="btn-explorar" onclick="entrarModoExploracao()" style="display:none;">🔍 Continuar jogando</button>
   </div>
 </div>
 
@@ -318,6 +321,7 @@ const QUESTIONS = [
 let currentUser = null;
 let currentQ = null;
 let qrCode = null;
+let modoExploracao = false;
 
 const urlParams = new URLSearchParams(window.location.search);
 qrCode = urlParams.get('q');
@@ -425,6 +429,14 @@ async function continueAfterLogin(){
 function showVencedorExistente(vencedor){
   document.getElementById('winner-name').textContent = vencedor.nome;
   document.getElementById('winner-pts').textContent = vencedor.pontos + ' pontos';
+  // Mostrar botão de continuar jogando só se tiver QR Code e não tiver respondido
+  const q = QUESTIONS.find(x => x.code === qrCode);
+  const btnExplorar = document.getElementById('btn-explorar');
+  if(q && currentUser && !currentUser.respondidas.includes(qrCode)){
+    btnExplorar.style.display = 'block';
+  } else {
+    btnExplorar.style.display = 'none';
+  }
   document.getElementById('winner-overlay').style.display = 'flex';
   spawnDancingAnimals();
   spawnFogos(); spawnStarRain(); spawnConfete();
@@ -455,25 +467,32 @@ async function answerQuestion(originalIdx, btn){
   document.querySelectorAll('.option').forEach(b=>{b.disabled=true;});
   const correct = currentQ.correct === originalIdx;
   btn.classList.add(correct?'selected-correct':'selected-wrong');
-  if(correct){ currentUser.pontos += 100; currentUser.acertos = (currentUser.acertos||0) + 1; }
-  else { currentUser.erros = (currentUser.erros||0) + 1; }
-  currentUser.respondidas.push(currentQ.code);
-  document.getElementById('q-user-pts').textContent = currentUser.pontos;
-  showLoading();
-  try { await callScript('saveParticipant', currentUser); } catch(e){}
-  hideLoading();
-
-  // Dispara animação imediatamente se vencedor
-  if(currentUser.pontos >= 5000){
-    showWinner(currentUser);
-    notifyWinner(currentUser);
-    return;
+  if(!modoExploracao){
+    if(correct){ currentUser.pontos += 100; currentUser.acertos = (currentUser.acertos||0) + 1; }
+    else { currentUser.erros = (currentUser.erros||0) + 1; }
+    currentUser.respondidas.push(currentQ.code);
+    document.getElementById('q-user-pts').textContent = currentUser.pontos;
+    showLoading();
+    try { await callScript('saveParticipant', currentUser); } catch(e){}
+    hideLoading();
+    // Dispara animação imediatamente se vencedor
+    if(currentUser.pontos >= 5000){
+      showWinner(currentUser);
+      notifyWinner(currentUser);
+      return;
+    }
   }
 
   const res = document.getElementById('q-result'); res.style.display='block';
-  res.innerHTML = correct
-    ? `<div class="result-box success"><div class="result-icon">🎯</div><div class="result-title">Resposta correta!</div><div class="result-pts">+100 pontos</div><div class="result-sub">Continue procurando os outros QR Codes!</div></div>`
-    : `<div class="result-box fail"><div class="result-icon">❌</div><div class="result-title">Resposta incorreta</div><div class="result-sub">Não foi dessa vez. Continue procurando os outros QR Codes!</div></div>`;
+  if(modoExploracao){
+    res.innerHTML = correct
+      ? `<div class="result-box success"><div class="result-icon">🎯</div><div class="result-title">Resposta correta!</div><div class="explore-badge">🔍 Modo exploração — sem pontuação</div><div class="result-sub">Você sabe muito sobre qualidade!</div></div>`
+      : `<div class="result-box fail"><div class="result-icon">❌</div><div class="result-title">Resposta incorreta</div><div class="explore-badge">🔍 Modo exploração — sem pontuação</div><div class="result-sub">Continue explorando os outros QR Codes!</div></div>`;
+  } else {
+    res.innerHTML = correct
+      ? `<div class="result-box success"><div class="result-icon">🎯</div><div class="result-title">Resposta correta!</div><div class="result-pts">+100 pontos</div><div class="result-sub">Continue procurando os outros QR Codes!</div></div>`
+      : `<div class="result-box fail"><div class="result-icon">❌</div><div class="result-title">Resposta incorreta</div><div class="result-sub">Não foi dessa vez. Continue procurando os outros QR Codes!</div></div>`;
+  }
   document.getElementById('btn-after-q').style.display='block';
 }
 
@@ -525,6 +544,16 @@ function closeWinner(){
   document.getElementById('winner-overlay').style.display = 'none';
   document.querySelectorAll('.w-particle,.w-star,.w-fogo,.w-animal,.w-flash').forEach(e=>e.remove());
   showRanking();
+}
+
+function entrarModoExploracao(){
+  modoExploracao = true;
+  if(winnerInterval){ clearInterval(winnerInterval); winnerInterval = null; }
+  document.getElementById('winner-overlay').style.display = 'none';
+  document.querySelectorAll('.w-particle,.w-star,.w-fogo,.w-animal,.w-flash').forEach(e=>e.remove());
+  const q = QUESTIONS.find(x => x.code === qrCode);
+  if(q) openQuestion(q);
+  else showScreen('screen-noqr');
 }
 
 function spawnDancingAnimals(){
