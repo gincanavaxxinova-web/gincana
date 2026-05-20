@@ -80,7 +80,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .winner-title{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:2.5px;color:var(--gold);margin:8px 0 6px;}
 .winner-name{font-size:24px;font-weight:900;color:var(--text);margin-bottom:4px;}
 .winner-pts{font-size:20px;font-weight:800;color:var(--gold);margin-bottom:8px;}
-.winner-animals{font-size:28px;letter-spacing:6px;margin:10px 0;}
 .winner-sub{font-size:12px;color:var(--text-muted);margin-top:8px;line-height:1.5;}
 
 /* Partículas */
@@ -95,11 +94,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .w-fogo{position:fixed;pointer-events:none;z-index:10000;font-size:28px;animation:wFogoExplode ease-out forwards;}
 @keyframes wFogoExplode{0%{transform:translate(0,0) scale(0.2);opacity:1;}40%{transform:translate(var(--tx),var(--ty)) scale(1.4);opacity:1;}100%{transform:translate(var(--tx2),var(--ty2)) scale(0.5);opacity:0;}}
 
-/* Bichinhos dançando */
-.w-animal{position:fixed;pointer-events:none;z-index:10000;font-size:32px;animation:wAnimalDance ease-in-out infinite;}
-@keyframes wAnimalDance{0%{transform:translateY(0) rotate(-10deg) scale(1);}25%{transform:translateY(-30px) rotate(10deg) scale(1.1);}50%{transform:translateY(0) rotate(-10deg) scale(1);}75%{transform:translateY(-20px) rotate(5deg) scale(1.05);}100%{transform:translateY(0) rotate(-10deg) scale(1);}}
-.w-animal.left{animation-name:wAnimalDanceLeft;}
-@keyframes wAnimalDanceLeft{0%{transform:translateY(0) rotate(10deg) scale(1);}25%{transform:translateY(-25px) rotate(-15deg) scale(1.1);}50%{transform:translateY(0) rotate(10deg) scale(1);}75%{transform:translateY(-15px) rotate(-5deg) scale(1.05);}100%{transform:translateY(0) rotate(10deg) scale(1);}}
+/* Bichinhos dançando nas laterais */
+.w-animal{position:fixed;pointer-events:none;z-index:10000;font-size:30px;animation:wAnimalDance ease-in-out infinite;}
+@keyframes wAnimalDance{0%{transform:translateY(0) rotate(-10deg) scale(1);}25%{transform:translateY(-28px) rotate(12deg) scale(1.15);}50%{transform:translateY(0) rotate(-10deg) scale(1);}75%{transform:translateY(-18px) rotate(6deg) scale(1.08);}100%{transform:translateY(0) rotate(-10deg) scale(1);}}
+.w-animal.mirror{animation-name:wAnimalDanceMirror;}
+@keyframes wAnimalDanceMirror{0%{transform:translateY(0) rotate(10deg) scale(1) scaleX(-1);}25%{transform:translateY(-28px) rotate(-12deg) scale(1.15) scaleX(-1);}50%{transform:translateY(0) rotate(10deg) scale(1) scaleX(-1);}75%{transform:translateY(-18px) rotate(-6deg) scale(1.08) scaleX(-1);}100%{transform:translateY(0) rotate(10deg) scale(1) scaleX(-1);}}
+/* Bichinhos caminhando */
+.w-walker{position:fixed;pointer-events:none;z-index:10000;font-size:28px;animation:wWalkRight linear infinite;}
+@keyframes wWalkRight{0%{transform:translateX(-60px) scaleX(1);}49%{transform:translateX(110vw) scaleX(1);}50%{transform:translateX(110vw) scaleX(-1);}100%{transform:translateX(-60px) scaleX(-1);}}
+.w-walker.rtl{animation-name:wWalkLeft;}
+@keyframes wWalkLeft{0%{transform:translateX(110vw) scaleX(-1);}49%{transform:translateX(-60px) scaleX(-1);}50%{transform:translateX(-60px) scaleX(1);}100%{transform:translateX(110vw) scaleX(1);}}
 
 /* Flash inicial */
 .w-flash{position:fixed;top:0;left:0;right:0;bottom:0;background:radial-gradient(circle at center,rgba(255,215,0,0.8) 0%,transparent 70%);z-index:2;pointer-events:none;animation:wFlashOut 1s ease forwards;}
@@ -245,7 +249,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="winner-title">🎉 Temos um vencedor!</div>
     <div class="winner-name" id="winner-name"></div>
     <div class="winner-pts" id="winner-pts"></div>
-    <div class="winner-animals">🐄 🐔 🐖</div>
+
     <div class="winner-sub">Atingiu 5.000 pontos e conquistou o tesouro da qualidade!</div>
     <div style="height:14px;"></div>
     <button class="btn btn-gold" onclick="closeWinner()">Ver ranking 🏅</button>
@@ -515,19 +519,43 @@ function closeWinner(){
 }
 
 function spawnDancingAnimals(){
-  const animais = ['🐄','🐔','🐖','🐟','🐱','🐶','🐄','🐔','🐖','🐟','🐱','🐶','🐄','🐔','🐖'];
-  animais.forEach((a,i)=>{
+  const overlay = document.getElementById('winner-overlay');
+  const animais = ['🐄','🐔','🐖','🐟','🐱','🐶'];
+
+  // Laterais simétricas — 3 bichinhos de cada lado pulando
+  const leftPositions  = [15, 35, 55]; // % do bottom
+  const rightPositions = [15, 35, 55];
+  animais.slice(0,3).forEach((a,i)=>{
+    // Esquerda
     const el = document.createElement('div');
-    el.className = 'w-animal' + (Math.random()>0.5?' left':'');
+    el.className = 'w-animal';
     el.textContent = a;
-    el.style.position = 'fixed';
-    el.style.left = (Math.random()*90)+'%';
-    el.style.bottom = (Math.random()*30)+'%';
-    el.style.fontSize = (24+Math.random()*20)+'px';
-    el.style.animationDuration = (0.5+Math.random()*0.6)+'s';
-    el.style.animationDelay = (Math.random()*0.5)+'s';
-    el.style.zIndex = '10000';
-    document.getElementById('winner-overlay').appendChild(el);
+    el.style.left = '2%';
+    el.style.bottom = leftPositions[i]+'%';
+    el.style.animationDuration = (0.6+i*0.1)+'s';
+    el.style.animationDelay = (i*0.15)+'s';
+    overlay.appendChild(el);
+    // Direita (espelhado)
+    const er = document.createElement('div');
+    er.className = 'w-animal mirror';
+    er.textContent = animais[i+3] || a;
+    er.style.right = '2%';
+    er.style.bottom = rightPositions[i]+'%';
+    er.style.animationDuration = (0.6+i*0.1)+'s';
+    er.style.animationDelay = (i*0.15)+'s';
+    overlay.appendChild(er);
+  });
+
+  // Fila caminhando na base — da esquerda para direita
+  const walkersBottom = ['🐄','🐔','🐖','🐱','🐶','🐟'];
+  walkersBottom.forEach((a,i)=>{
+    const w = document.createElement('div');
+    w.className = 'w-walker' + (i%2===0?'':' rtl');
+    w.textContent = a;
+    w.style.bottom = (2 + (i%2)*5)+'%';
+    w.style.animationDuration = (6+Math.random()*4)+'s';
+    w.style.animationDelay = (i*0.8)+'s';
+    overlay.appendChild(w);
   });
 }
 
