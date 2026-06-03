@@ -247,7 +247,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="winner-name" id="winner-name"></div>
     <div class="winner-pts" id="winner-pts"></div>
 
-    <div class="winner-sub">Atingiu 5.000 pontos e conquistou o tesouro da qualidade!</div>
+    <div class="winner-sub">Atingiu 4.000 pontos e conquistou o tesouro da qualidade!</div>
     <div style="height:14px;"></div>
     <button class="btn btn-gold" onclick="closeWinner()">Ver ranking 🏅</button>
     <div style="height:8px;"></div>
@@ -271,7 +271,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <script>
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzEPOYG2XwaQeKVL4p4MyDFRQ-eo_thoB1ee0Ht6sBnr4NLMAMQd89HX6Vl2rvLn42C/exec';
 
-const SETORES = ["Almoxarifado","Assuntos Reg. Internacionais","Assuntos Regulatórios","Autógenas","Bacterinas","BTS","Coccidiose","Comercial","Contabilidade","Cravação","Cultura de Tecidos","Embalagem","Engenharia","Envase I","Envase II","Envase III","Controle de Qualidade - Escritório","Expedição","FMV","Formulação","HSE","Laboratório de Antígenos","Lavagem e Esterilização I","Lavagem e Esterilização II","Controle de Qualidade - LEB","Controle de Qualidade - LEA","Controle de Qualidade - LEE","Controle de Qualidade - LEFQE","Controle de Qualidade - LEVS","Liofilização","Manutenção","Marketing","Meios de Cultura","Metrologia","Logística","OPEX","Ovos Embrionados","P&D","PAC","PCP","RH","Raiva","SAC","Suprimento","TI"];
+const SETORES = ["Almoxarifado","Artes","Assuntos Reg. Internacionais","Assuntos Regulatórios","Autógenas","Bacterinas","BTS","Coccidiose","Comercial","Contabilidade","Cravação","Cultura de Tecidos","Embalagem","Engenharia","Envase I","Envase II","Envase III","Controle de Qualidade - Escritório","Expedição","FMV","Formulação","HSE","Laboratório de Antígenos","Lavagem e Esterilização I","Lavagem e Esterilização II","Controle de Qualidade - LEB","Controle de Qualidade - LEA","Controle de Qualidade - LEE","Controle de Qualidade - LEFQE","Controle de Qualidade - LEVS","Liofilização","Manutenção","Marketing","Meios de Cultura","Metrologia","Logística","OPEX","Ovos Embrionados","P&D","PAC","PCP","RH","Raiva","SAC","Suprimento","TI","Outros"];
 
 const QR_MAP = {
   'tpkAbZtV': 0, 'il9nw4y6': 1, '4StyY0yU': 2, 'M7Vpecyb': 3,
@@ -432,7 +432,7 @@ async function continueAfterLogin(){
   hideLoading();
 
   // Verifica se já há um vencedor no ranking
-  const vencedor = rankingData.find(p => p.pontos >= 5000);
+  const vencedor = rankingData.find(p => p.pontos >= 4000);
   if(vencedor && vencedor.matricula !== currentUser.matricula){
     showVencedorExistente(vencedor); return;
   }
@@ -500,7 +500,7 @@ async function answerQuestion(originalIdx, btn){
     try { await callScript('saveParticipant', currentUser); } catch(e){}
     hideLoading();
     // Dispara animação imediatamente se vencedor
-    if(currentUser.pontos >= 5000){
+    if(currentUser.pontos >= 4000){
       showWinner(currentUser);
       notifyWinner(currentUser);
       return;
@@ -521,7 +521,7 @@ async function answerQuestion(originalIdx, btn){
 }
 
 function checkWinner(){
-  if(currentUser && currentUser.pontos >= 5000){
+  if(currentUser && currentUser.pontos >= 4000){
     showWinner(currentUser);
     notifyWinner(currentUser);
     return true;
