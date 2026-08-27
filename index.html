@@ -491,7 +491,7 @@ function showEncerramento(){
         <div class="podium-name">${p.nome}</div>
         <div class="podium-setor">${p.setor}</div>
       </div>
-      <div class="podium-pts">${p.pontos} pts</div>
+      <div><div class="podium-pts">${p.pontos} pts</div><div class="rank-time">${formatDataHora(p.ultimaResposta)}</div></div>
     `;
     podium.appendChild(div);
   });
