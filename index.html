@@ -82,6 +82,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 /* TELA AGUARDE */
 .wait-screen{text-align:center;}
 .wait-icon{font-size:60px;margin-bottom:12px;}
+.how-step{display:flex;align-items:flex-start;gap:10px;margin-bottom:14px;}
+.how-step:last-child{margin-bottom:0;}
+.how-num{width:26px;height:26px;border-radius:50%;background:var(--gold);color:white;font-size:13px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.how-text{font-size:13px;color:var(--text);line-height:1.5;padding-top:3px;}
+.how-text b{color:var(--gold);}
+.tip-line{font-size:13px;color:var(--text);line-height:1.6;margin-bottom:10px;padding-left:14px;position:relative;}
+.tip-line:last-child{margin-bottom:0;}
+.tip-line::before{content:'•';color:var(--gold);position:absolute;left:0;font-weight:900;}
+.tip-line b{color:var(--gold);}
+.tip-motivacional{font-size:13px;color:var(--gold);font-weight:700;font-style:italic;text-align:center;margin-top:14px;padding-top:12px;border-top:1px dashed var(--gold-border);}
 .countdown-big{font-size:28px;font-weight:900;color:var(--gold);margin:12px 0;letter-spacing:1px;}
 .countdown-big span{font-size:12px;font-weight:600;color:var(--text-muted);display:block;margin-top:4px;}
 
@@ -171,6 +181,46 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     </div>
     <div class="section-label" style="text-align:center;">A gincana começa em:</div>
     <div class="countdown-big" id="wait-countdown">--:--:--:--<span>dias : horas : min : seg</span></div>
+  </div>
+  <div class="card card-gold-left">
+    <p class="section-label">Enquanto isso, veja como participar</p>
+    <div class="how-step">
+      <div class="how-num">1</div>
+      <div class="how-text"><b>Escaneie</b> um QR Code espalhado pela empresa</div>
+    </div>
+    <div class="how-step">
+      <div class="how-num">2</div>
+      <div class="how-text"><b>Digite sua matrícula</b> — sem senha, sem login</div>
+    </div>
+    <div class="how-step">
+      <div class="how-num">3</div>
+      <div class="how-text">Na <b>primeira vez</b>, informe seu <b>nome completo</b> e o seu <b>setor</b></div>
+    </div>
+    <div class="how-step">
+      <div class="how-num">4</div>
+      <div class="how-text"><b>Responda</b> a pergunta de qualidade — você só tem uma chance!</div>
+    </div>
+    <div class="how-step">
+      <div class="how-num">5</div>
+      <div class="how-text">Acertou? <b>+100 pontos</b> na hora!</div>
+    </div>
+    <div class="how-step">
+      <div class="how-num">6</div>
+      <div class="how-text"><b>Continue procurando</b> os outros QR Codes pela empresa</div>
+    </div>
+    <div class="how-step">
+      <div class="how-num">7</div>
+      <div class="how-text">Toque em <b>"Ver ranking"</b> a qualquer momento — os 3 primeiros ganham medalha 🥇🥈🥉</div>
+    </div>
+  </div>
+  <div class="card card-gold-left">
+    <p class="section-label">💡 Orientações importantes</p>
+    <p class="tip-line">Vence quem tiver <b>mais pontos</b> ao final da gincana.</p>
+    <p class="tip-line">Em caso de <b>empate</b>, tem vantagem quem <b>atingiu essa pontuação primeiro</b>.</p>
+    <p class="tip-line">Cada QR Code só pode ser respondido <b>uma única vez</b>.</p>
+    <p class="tip-line">São <b>50 QR Codes</b> ao todo — nenhum está dentro das áreas produtivas, apenas nas <b>áreas externas</b>.</p>
+    <p class="tip-line"><b>Não é sorteio</b>: o prêmio depende só de <b>você</b>!</p>
+    <p class="tip-motivacional">Aproveite para aprender se divertindo — o conhecimento já é a sua primeira vitória! 🚀</p>
   </div>
 </div>
 </div>
@@ -362,7 +412,7 @@ const QUESTIONS = [
   {code:'lJT6so7T',text:"QUAL O NOME DO ÓRGÃO REGULAMENTADOR NACIONAL DE PRODUTOS DE USO VETERINÁRIO?",options:["MATA - MINISTÉRIO DA AGRICULTURA TRABALHO E ABASTECIMENTO","MAPA - MINISTÉRIO DA AGRICULTURA PARA ABASTECIMENTO","MAPA - MINISTÉRIO DA AGRICULTURA PRODUÇÃO E ABASTECIMENTO","MAPA - MINISTÉRIO DA AGRICULTURA PECUÁRIA E ABASTECIMENTO"],correct:3},
   {code:'NQLSsdTp',text:"SEGUNDO A IN°13, QUAL O OBJETIVO DA AUTOINSPEÇÃO?",options:["VERIFICAR OS PROBLEMAS DO SETOR E SAIR FALANDO PRA TODO MUNDO","VERIFICAR OS PROBLEMAS E RESOLVER TODOS PELO SETOR","NENHUMA DAS ALTERNATIVAS ESTÃO CORRETAS","VERIFICAR O CUMPRIMENTO DE BPF"],correct:3},
   {code:'bODrz5wM',text:"SEGUNDO A IN N°13, QUAL SETOR É RESPONSÁVEL PELA APROVAÇÃO OU REPROVAÇÃO DE MATÉRIA-PRIMA, MATERIAL DE EMBALAGEM, PRODUTO INTERMEDIÁRIO E ACABADO?",options:["GARANTIA DA QUALIDADE","CONTROLE DE QUALIDADE","ALMOXARIFADO","MELHORIA DE PRODUTOS"],correct:1},
-  {code:'nDldzs3t',text:"SEGUNDO A IN N°13, OS MATERIAIS E MATÉRIAS-PRIMAS DEVEM OBEDECER QUAL ROTAÇÃO DE ESTOQUE?",options:["O ÚLTIMO QUE VENCE É O PRIMEIRO QUE SAI; O ÚLTIMO QUE ENTRA É O PRIMEIRO QUE SAI","O PRIMEIRO QUE ENTRA É O PRIMEIRO QUE VENCE; O PRIMEIRO QUE VENCE É O PRIMEIRO QUE ENTRA","O PRIMEIRO QUE VENCE É O PRIMEIRO QUE SAI; O PRIMEIRO QUE ENTRA É O PRIMEIRO QUE SAI","TODAS AS ALTERNATIVAS ESTÃO INCORRETAS"],correct:2},
+  {code:'nDldzs3t',text:"SEGUNDO A IN N°13, OS MATERIAIS E MATÉRIAS-PRIMAS DEVEM OBEDECER QUAL ROTAÇÃO DE ESTOQUE?",options:["O PRIMEIRO QUE VENCE É O PRIMEIRO QUE SAI; O PRIMEIRO QUE ENTRA É O PRIMEIRO QUE SAI","O PRIMEIRO QUE ENTRA É O PRIMEIRO QUE VENCE; O PRIMEIRO QUE VENCE É O PRIMEIRO QUE ENTRA","O PRIMEIRO QUE VENCE É O PRIMEIRO QUE SAI; O PRIMEIRO QUE ENTRA É O PRIMEIRO QUE SAI","TODAS AS ALTERNATIVAS ESTÃO INCORRETAS"],correct:2},
   {code:'4hHXeA1T',text:"QUAL A FORMA CORRETA DE UTILIZAR A TOUCA?",options:["COBRINDO AS ORELHAS E A NUCA — NÃO DEVE HAVER FIOS DE CABELO PARA FORA DELA","COBRINDO AS ORELHAS — NÃO DEVE HAVER FIOS DE CABELO PARA FORA DELA","COM AS ORELHAS E NUCA PARA FORA — NÃO HÁ PROBLEMAS DE HAVER FIOS DE CABELO PARA FORA DELA","DEVE SER UTILIZADA COMO BOINA"],correct:0},
   {code:'MFZeaykR',text:"SEGUNDO A IN N°13, O UNIFORME DEVE:",options:["SER UTILIZADO CONFORME A ATIVIDADE DESENVOLVIDA, SER TROCADO COM FREQUÊNCIA SEM A NECESSIDADE DE ESTAR LIMPO","SER UTILIZADO CONFORME ACHAR NECESSÁRIO SEM A NECESSIDADE DE SER TROCADO COM FREQUÊNCIA","SER UTILIZADO CONFORME A ATIVIDADE DESENVOLVIDA, ESTAR LIMPO E SER TROCADO COM FREQUÊNCIA","TODAS AS OPÇÕES ESTÃO INCORRETAS"],correct:2},
   {code:'mnTvlmSr',text:"QUANTO À CORREÇÃO BPF, É CORRETO AFIRMAR QUE:",options:["É PROIBIDO RASURAR, COLAR QUALQUER FOLHA EM CIMA, PASSAR CORRETIVO (BRANQUINHO) OU TENTAR APAGAR COM BORRACHA OU DEDO UMEDECIDO","É PERMITIDO RASURAR, COLAR QUALQUER FOLHA EM CIMA, PASSAR CORRETIVO (BRANQUINHO) OU TENTAR APAGAR COM BORRACHA OU DEDO UMEDECIDO","É PROIBIDO APENAS COLAR FOLHA EM CIMA, MAS É PERMITIDO PASSAR CORRETIVO (BRANQUINHO) OU APAGAR COM BORRACHA","É PERMITIDO APENAS RASURAR OU PASSAR CORRETIVO (BRANQUINHO) OU APAGAR COM BORRACHA"],correct:0},
@@ -491,7 +541,7 @@ function showEncerramento(){
         <div class="podium-name">${p.nome}</div>
         <div class="podium-setor">${p.setor}</div>
       </div>
-      <div><div class="podium-pts">${p.pontos} pts</div><div class="rank-time">${formatDataHora(p.ultimaResposta)}</div></div>
+      <div class="podium-pts">${p.pontos} pts</div>
     `;
     podium.appendChild(div);
   });
@@ -553,8 +603,7 @@ function formatDataHora(iso){
   const mm = String(d.getMonth()+1).padStart(2,'0');
   const hh = String(d.getHours()).padStart(2,'0');
   const mi = String(d.getMinutes()).padStart(2,'0');
-  const ss = String(d.getSeconds()).padStart(2,'0');
-  return `${dd}/${mm} ${hh}:${mi}:${ss}`;
+  return `${dd}/${mm} ${hh}:${mi}`;
 }
 
 async function callScript(action, payload){
